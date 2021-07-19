@@ -1,15 +1,37 @@
 package engine
 
-// Colors (1 bit).
+import (
+	"math/rand"
+	"reflect"
+)
+
+type (
+	Color     uint8
+	Role      uint8
+	Piece     uint8
+	Square    uint8
+	File      uint8
+	Rank      uint8
+	Direction int8
+)
+
 const (
-	White = iota
+	NumColors     = 2
+	NumRoles      = 6
+	NumPieces     = 12
+	NumSquares    = 64
+	NumFiles      = 8
+	NumRanks      = 8
+	NumDirections = 8
+)
+
+const (
+	White Color = iota
 	Black
 )
 
-// Roles (3 bits).
 const (
-	NoRole = iota
-	Pawn
+	Pawn Role = iota
 	Knight
 	Bishop
 	Rook
@@ -17,26 +39,26 @@ const (
 	King
 )
 
-// Pieces (4 bits).
+// Pieces have a color (bit 3) and a role (bits 2-0).
 const (
-	NoPiece     = 0
-	WhitePawn   = (White << 3) | Pawn
-	WhiteKnight = (White << 3) | Knight
-	WhiteBishop = (White << 3) | Bishop
-	WhiteRook   = (White << 3) | Rook
-	WhiteQueen  = (White << 3) | Queen
-	WhiteKing   = (White << 3) | King
-	BlackPawn   = (Black << 3) | Pawn
-	BlackKnight = (Black << 3) | Knight
-	BlackBishop = (Black << 3) | Bishop
-	BlackRook   = (Black << 3) | Rook
-	BlackQueen  = (Black << 3) | Queen
-	BlackKing   = (Black << 3) | King
+	WhitePawn   Piece = Piece(uint8(White<<3) | uint8(Pawn))
+	WhiteKnight Piece = Piece(uint8(White<<3) | uint8(Knight))
+	WhiteBishop Piece = Piece(uint8(White<<3) | uint8(Bishop))
+	WhiteRook   Piece = Piece(uint8(White<<3) | uint8(Rook))
+	WhiteQueen  Piece = Piece(uint8(White<<3) | uint8(Queen))
+	WhiteKing   Piece = Piece(uint8(White<<3) | uint8(King))
+	BlackPawn   Piece = Piece(uint8(Black<<3) | uint8(Pawn))
+	BlackKnight Piece = Piece(uint8(Black<<3) | uint8(Knight))
+	BlackBishop Piece = Piece(uint8(Black<<3) | uint8(Bishop))
+	BlackRook   Piece = Piece(uint8(Black<<3) | uint8(Rook))
+	BlackQueen  Piece = Piece(uint8(Black<<3) | uint8(Queen))
+	BlackKing   Piece = Piece(uint8(Black<<3) | uint8(King))
 )
 
-// Squares (6 bits).
+// Squares start at A1 = 0. They increase left to right, and then bottom to top.
+// Squares have a rank (bits 5-3) and a file (bits 2-0).
 const (
-	A1 = iota
+	A1 Square = iota
 	B1
 	C1
 	D1
@@ -102,9 +124,8 @@ const (
 	H8
 )
 
-// Files (3 bits).
 const (
-	FileA = iota
+	FileA File = iota
 	FileB
 	FileC
 	FileD
@@ -114,9 +135,9 @@ const (
 	FileH
 )
 
-// Ranks (3 bits). Note that Rank1 equals 0.
+// Note that Rank1 is 0.
 const (
-	Rank1 = iota
+	Rank1 Rank = iota
 	Rank2
 	Rank3
 	Rank4
@@ -128,96 +149,78 @@ const (
 
 // Directions.
 const (
-	North     = 8
-	East      = 1
-	South     = -North
-	West      = -East
-	Northeast = North + East
-	Northwest = North + West
-	Southeast = South + East
-	Southwest = South + West
+	North     Direction = 8
+	East                = 1
+	South               = -North
+	West                = -East
+	Northeast           = North + East
+	Northwest           = North + West
+	Southeast           = South + East
+	Southwest           = South + West
 )
 
-func PieceToRole(piece uint8) uint8 {
-	return piece & 0b111
+func (p Piece) Role() Role {
+	return Role(p & 0b111)
 }
 
-func PieceToColor(piece uint8) uint8 {
-	return (piece & (1 << 3)) >> 3
+func (p Piece) Color() Color {
+	return Color(p >> 3 & 1)
 }
 
-func SquareToFile(square uint8) uint8 {
-	return square & 0b111
+func (s Square) File() File {
+	return File(s & 0b111)
 }
 
-func SquareToRank(square uint8) uint8 {
-	return (square & (0b111 << 3)) >> 3
+func (s Square) Rank() Rank {
+	return Rank(s >> 3 & 0b111)
 }
 
-func SquareFromFileRank(file uint8, rank uint8) uint8 {
-	return (rank << 3) | file
+func PieceFromColorRole(c Color, r Role) Piece {
+	return Piece(uint8(c)<<3 | uint8(r))
 }
 
-// PieceToRune converts a piece to a rune. Invalid pieces are converted to '-'.
-func PieceToRune(piece uint8) rune {
-	switch piece {
-	case WhitePawn:
-		return 'P'
-	case WhiteKnight:
-		return 'N'
-	case WhiteBishop:
-		return 'B'
-	case WhiteRook:
-		return 'R'
-	case WhiteQueen:
-		return 'Q'
-	case WhiteKing:
-		return 'K'
-	case BlackPawn:
-		return 'p'
-	case BlackKnight:
-		return 'n'
-	case BlackBishop:
-		return 'b'
-	case BlackRook:
-		return 'r'
-	case BlackQueen:
-		return 'q'
-	case BlackKing:
-		return 'k'
-	default:
-		return '-'
-	}
+func SquareFromFileRank(f File, r Rank) Square {
+	return Square(uint8(r)<<3 | uint8(f))
 }
 
-// PieceFromRune converts a rune to a piece. The default piece is NoPiece.
-func PieceFromRune(r rune) uint8 {
-	switch r {
-	case 'P':
-		return WhitePawn
-	case 'p':
-		return BlackPawn
-	case 'N':
-		return WhiteKnight
-	case 'n':
-		return BlackKnight
-	case 'B':
-		return WhiteBishop
-	case 'b':
-		return BlackBishop
-	case 'R':
-		return WhiteRook
-	case 'r':
-		return BlackRook
-	case 'Q':
-		return WhiteQueen
-	case 'q':
-		return BlackQueen
-	case 'K':
-		return WhiteKing
-	case 'k':
-		return BlackKing
-	default:
-		return NoPiece
-	}
+// Generate lets Color implement testing/quick.Generator.
+func (Color) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	c := Color(rand.Intn(NumColors))
+	return reflect.ValueOf(c)
+}
+
+// Generate lets Role implement testing/quick.Generator.
+func (Role) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	r := Role(rand.Intn(NumRoles))
+	return reflect.ValueOf(r)
+}
+
+// Generate lets Piece implement testing/quick.Generator.
+func (Piece) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	p := Piece(rand.Intn(NumPieces))
+	return reflect.ValueOf(p)
+}
+
+// Generate lets File implement testing/quick.Generator.
+func (File) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	f := File(rand.Intn(NumFiles))
+	return reflect.ValueOf(f)
+}
+
+// Generate lets Rank implement testing/quick.Generator.
+func (Rank) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	r := Rank(rand.Intn(NumRanks))
+	return reflect.ValueOf(r)
+}
+
+// Generate lets Square implement testing/quick.Generator.
+func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	s := Square(rand.Intn(NumSquares))
+	return reflect.ValueOf(s)
 }
