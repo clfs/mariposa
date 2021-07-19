@@ -8,7 +8,8 @@ const (
 
 // Roles (3 bits).
 const (
-	Pawn = iota + 1
+	NoRole = iota
+	Pawn
 	Knight
 	Bishop
 	Rook
@@ -18,18 +19,19 @@ const (
 
 // Pieces (4 bits).
 const (
-	WhitePawn   = (White << 3) ^ Pawn
-	WhiteKnight = (White << 3) ^ Knight
-	WhiteBishop = (White << 3) ^ Bishop
-	WhiteRook   = (White << 3) ^ Rook
-	WhiteQueen  = (White << 3) ^ Queen
-	WhiteKing   = (White << 3) ^ King
-	BlackPawn   = (Black << 3) ^ Pawn
-	BlackKnight = (Black << 3) ^ Knight
-	BlackBishop = (Black << 3) ^ Bishop
-	BlackRook   = (Black << 3) ^ Rook
-	BlackQueen  = (Black << 3) ^ Queen
-	BlackKing   = (Black << 3) ^ King
+	NoPiece     = 0
+	WhitePawn   = (White << 3) | Pawn
+	WhiteKnight = (White << 3) | Knight
+	WhiteBishop = (White << 3) | Bishop
+	WhiteRook   = (White << 3) | Rook
+	WhiteQueen  = (White << 3) | Queen
+	WhiteKing   = (White << 3) | King
+	BlackPawn   = (Black << 3) | Pawn
+	BlackKnight = (Black << 3) | Knight
+	BlackBishop = (Black << 3) | Bishop
+	BlackRook   = (Black << 3) | Rook
+	BlackQueen  = (Black << 3) | Queen
+	BlackKing   = (Black << 3) | King
 )
 
 // Squares (6 bits).
@@ -141,7 +143,7 @@ func PieceToRole(piece uint8) uint8 {
 }
 
 func PieceToColor(piece uint8) uint8 {
-	return piece & (1 << 3)
+	return (piece & (1 << 3)) >> 3
 }
 
 func SquareToFile(square uint8) uint8 {
@@ -149,9 +151,73 @@ func SquareToFile(square uint8) uint8 {
 }
 
 func SquareToRank(square uint8) uint8 {
-	return square & (0b111 << 3)
+	return (square & (0b111 << 3)) >> 3
 }
 
 func SquareFromFileRank(file uint8, rank uint8) uint8 {
-	return (file << 3) | rank
+	return (rank << 3) | file
+}
+
+// PieceToRune converts a piece to a rune. Invalid pieces are converted to '-'.
+func PieceToRune(piece uint8) rune {
+	switch piece {
+	case WhitePawn:
+		return 'P'
+	case WhiteKnight:
+		return 'N'
+	case WhiteBishop:
+		return 'B'
+	case WhiteRook:
+		return 'R'
+	case WhiteQueen:
+		return 'Q'
+	case WhiteKing:
+		return 'K'
+	case BlackPawn:
+		return 'p'
+	case BlackKnight:
+		return 'n'
+	case BlackBishop:
+		return 'b'
+	case BlackRook:
+		return 'r'
+	case BlackQueen:
+		return 'q'
+	case BlackKing:
+		return 'k'
+	default:
+		return '-'
+	}
+}
+
+// PieceFromRune converts a rune to a piece. The default piece is NoPiece.
+func PieceFromRune(r rune) uint8 {
+	switch r {
+	case 'P':
+		return WhitePawn
+	case 'p':
+		return BlackPawn
+	case 'N':
+		return WhiteKnight
+	case 'n':
+		return BlackKnight
+	case 'B':
+		return WhiteBishop
+	case 'b':
+		return BlackBishop
+	case 'R':
+		return WhiteRook
+	case 'r':
+		return BlackRook
+	case 'Q':
+		return WhiteQueen
+	case 'q':
+		return BlackQueen
+	case 'K':
+		return WhiteKing
+	case 'k':
+		return BlackKing
+	default:
+		return NoPiece
+	}
 }
