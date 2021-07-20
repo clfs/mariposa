@@ -26,9 +26,17 @@ const (
 )
 
 const (
+	NoColor  Color  = 0xff
+	NoRole   Role   = 0xff
+	NoPiece  Piece  = 0xff
+	NoFile   File   = 0xff
+	NoRank   Rank   = 0xff
+	NoSquare Square = 0xff
+)
+
+const (
 	White Color = iota
 	Black
-	NoColor
 )
 
 const (
@@ -38,24 +46,22 @@ const (
 	Rook
 	Queen
 	King
-	NoRole
 )
 
 // Pieces have a color (bit 3) and a role (bits 2-0).
 const (
-	WhitePawn   Piece = Piece(uint8(White<<3) | uint8(Pawn))
-	WhiteKnight Piece = Piece(uint8(White<<3) | uint8(Knight))
-	WhiteBishop Piece = Piece(uint8(White<<3) | uint8(Bishop))
-	WhiteRook   Piece = Piece(uint8(White<<3) | uint8(Rook))
-	WhiteQueen  Piece = Piece(uint8(White<<3) | uint8(Queen))
-	WhiteKing   Piece = Piece(uint8(White<<3) | uint8(King))
-	BlackPawn   Piece = Piece(uint8(Black<<3) | uint8(Pawn))
-	BlackKnight Piece = Piece(uint8(Black<<3) | uint8(Knight))
-	BlackBishop Piece = Piece(uint8(Black<<3) | uint8(Bishop))
-	BlackRook   Piece = Piece(uint8(Black<<3) | uint8(Rook))
-	BlackQueen  Piece = Piece(uint8(Black<<3) | uint8(Queen))
-	BlackKing   Piece = Piece(uint8(Black<<3) | uint8(King))
-	NoPiece     Piece = 0xff
+	WhitePawn   Piece = Piece(uint8(White)<<3 | uint8(Pawn))
+	WhiteKnight Piece = Piece(uint8(White)<<3 | uint8(Knight))
+	WhiteBishop Piece = Piece(uint8(White)<<3 | uint8(Bishop))
+	WhiteRook   Piece = Piece(uint8(White)<<3 | uint8(Rook))
+	WhiteQueen  Piece = Piece(uint8(White)<<3 | uint8(Queen))
+	WhiteKing   Piece = Piece(uint8(White)<<3 | uint8(King))
+	BlackPawn   Piece = Piece(uint8(Black)<<3 | uint8(Pawn))
+	BlackKnight Piece = Piece(uint8(Black)<<3 | uint8(Knight))
+	BlackBishop Piece = Piece(uint8(Black)<<3 | uint8(Bishop))
+	BlackRook   Piece = Piece(uint8(Black)<<3 | uint8(Rook))
+	BlackQueen  Piece = Piece(uint8(Black)<<3 | uint8(Queen))
+	BlackKing   Piece = Piece(uint8(Black)<<3 | uint8(King))
 )
 
 // Squares start at A1 = 0. They increase left to right, and then bottom to top.
@@ -125,7 +131,6 @@ const (
 	F8
 	G8
 	H8
-	NoSquare
 )
 
 const (
@@ -137,7 +142,6 @@ const (
 	FileF
 	FileG
 	FileH
-	NoFile
 )
 
 // Note that Rank1 is 0.
@@ -150,7 +154,6 @@ const (
 	Rank6
 	Rank7
 	Rank8
-	NoRank
 )
 
 func (p Piece) Role() Role {
@@ -159,6 +162,38 @@ func (p Piece) Role() Role {
 
 func (p Piece) Color() Color {
 	return Color(p >> 3 & 1)
+}
+
+// Rune converts a Piece to a rune. Invalid pieces become ' '.
+func (p Piece) Rune() rune {
+	switch p {
+	case WhitePawn:
+		return 'P'
+	case WhiteKnight:
+		return 'N'
+	case WhiteBishop:
+		return 'B'
+	case WhiteRook:
+		return 'R'
+	case WhiteQueen:
+		return 'Q'
+	case WhiteKing:
+		return 'K'
+	case BlackPawn:
+		return 'p'
+	case BlackKnight:
+		return 'n'
+	case BlackBishop:
+		return 'b'
+	case BlackRook:
+		return 'r'
+	case BlackQueen:
+		return 'q'
+	case BlackKing:
+		return 'k'
+	default:
+		return ' '
+	}
 }
 
 func (f File) IsValid() bool {
@@ -235,15 +270,15 @@ func SquareFromString(s string) (Square, error) {
 		return NoSquare, nil
 	}
 	if len(s) != 2 {
-		return 0, &ParseSquareError{s}
+		return NoSquare, &ParseSquareError{s}
 	}
 	f, err := FileFromRune(rune(s[0]))
 	if err != nil {
-		return 0, err
+		return NoSquare, &ParseSquareError{s}
 	}
 	r, err := RankFromRune(rune(s[1]))
 	if err != nil {
-		return 0, err
+		return NoSquare, &ParseSquareError{s}
 	}
 	return SquareFromFileRank(f, r), nil
 }
@@ -269,7 +304,7 @@ func (Role) Generate(rand *rand.Rand, size int) reflect.Value {
 // Generate lets Piece implement testing/quick.Generator.
 func (Piece) Generate(rand *rand.Rand, size int) reflect.Value {
 	_ = size
-	choices := []Piece{NoPiece, WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing, BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing}
+	choices := []Piece{WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing, BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing}
 	p := choices[rand.Intn(len(choices))]
 	return reflect.ValueOf(p)
 }
