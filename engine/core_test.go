@@ -8,6 +8,7 @@ import (
 )
 
 func TestPieceFromColorRole(t *testing.T) {
+	t.Parallel()
 	f := func(c Color, r Role) bool {
 		p := PieceFromColorRole(c, r)
 		return p.Color() == c && p.Role() == r
@@ -18,6 +19,7 @@ func TestPieceFromColorRole(t *testing.T) {
 }
 
 func TestSquareFromFileRank(t *testing.T) {
+	t.Parallel()
 	f := func(f File, r Rank) bool {
 		s := SquareFromFileRank(f, r)
 		return s.File() == f && s.Rank() == r

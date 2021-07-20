@@ -50,18 +50,20 @@ const (
 
 // Pieces have a color (bit 3) and a role (bits 2-0).
 const (
-	WhitePawn   Piece = Piece(uint8(White)<<3 | uint8(Pawn))
-	WhiteKnight Piece = Piece(uint8(White)<<3 | uint8(Knight))
-	WhiteBishop Piece = Piece(uint8(White)<<3 | uint8(Bishop))
-	WhiteRook   Piece = Piece(uint8(White)<<3 | uint8(Rook))
-	WhiteQueen  Piece = Piece(uint8(White)<<3 | uint8(Queen))
-	WhiteKing   Piece = Piece(uint8(White)<<3 | uint8(King))
-	BlackPawn   Piece = Piece(uint8(Black)<<3 | uint8(Pawn))
-	BlackKnight Piece = Piece(uint8(Black)<<3 | uint8(Knight))
-	BlackBishop Piece = Piece(uint8(Black)<<3 | uint8(Bishop))
-	BlackRook   Piece = Piece(uint8(Black)<<3 | uint8(Rook))
-	BlackQueen  Piece = Piece(uint8(Black)<<3 | uint8(Queen))
-	BlackKing   Piece = Piece(uint8(Black)<<3 | uint8(King))
+	WhitePawn Piece = iota
+	WhiteKnight
+	WhiteBishop
+	WhiteRook
+	WhiteQueen
+	WhiteKing
+	_
+	_
+	BlackPawn
+	BlackKnight
+	BlackBishop
+	BlackRook
+	BlackQueen
+	BlackKing
 )
 
 // Squares start at A1 = 0. They increase left to right, and then bottom to top.

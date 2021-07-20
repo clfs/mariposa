@@ -94,3 +94,9 @@ func (p *Position) FromFEN(fen string) error {
 
 	return nil
 }
+
+func (p *Position) FEN() string {
+	var fen strings.Builder
+
+	return fen.String()
+}
