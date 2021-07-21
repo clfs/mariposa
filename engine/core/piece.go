@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 type Piece uint8
 
@@ -63,6 +67,18 @@ func (p Piece) String() string {
 	default:
 		return fmt.Sprintf("Piece(%d)", uint8(p))
 	}
+}
+
+// Generate implements quick.Generator. It only generates pre-defined
+// constants of type Piece.
+func (Piece) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	x := []Piece{
+		WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing,
+		BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing,
+		NoPiece,
+	}
+	return reflect.ValueOf(Piece(x[rand.Intn(len(x))]))
 }
 
 func PieceFromString(s string) Piece {

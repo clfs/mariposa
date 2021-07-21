@@ -6,11 +6,11 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 
-	"github.com/clfs/mariposa/engine/core"
+	"github.com/clfs/mariposa/engine/board"
 )
 
 func main() {
-	b, err := core.NewBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+	b, err := board.New("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	if err != nil {
 		log.Fatal(err)
 	}

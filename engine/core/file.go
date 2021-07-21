@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 type File uint8
 
@@ -25,5 +29,12 @@ func (f File) String() string {
 	if !f.IsValid() {
 		return fmt.Sprintf("File(%d)", uint8(f))
 	}
-	return string('A' + uint8(f))
+	return string('a' + uint8(f))
+}
+
+// Generate implements quick.Generator. It only generates pre-defined
+// constants of type File.
+func (File) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	return reflect.ValueOf(File(rand.Intn(NumFiles)))
 }

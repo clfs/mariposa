@@ -99,6 +99,9 @@ func SquareFromString(s string) Square {
 	}
 	f := File(s[0] - 'a')
 	r := Rank(s[1] - '1')
+	if !f.IsValid() || !r.IsValid() {
+		return NoSquare
+	}
 	return SquareFromFileRank(f, r)
 }
 

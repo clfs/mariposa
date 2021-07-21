@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 type Rank uint8
 
@@ -27,4 +31,11 @@ func (r Rank) String() string {
 		return fmt.Sprintf("Rank(%d)", uint8(r))
 	}
 	return string('1' + uint8(r))
+}
+
+// Generate implements quick.Generator. It only generates pre-defined
+// constants of type Rank.
+func (Rank) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	return reflect.ValueOf(Rank(rand.Intn(NumRanks)))
 }

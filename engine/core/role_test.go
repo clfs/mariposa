@@ -23,7 +23,29 @@ func TestRole_IsValid(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.IsValid(); got != c.b {
-			t.Errorf("Role.IsValid(%s) = %v, want %v", c.r, got, c.b)
+			t.Errorf("%s.IsValid() = %v, want %v", c.r, got, c.b)
+		}
+	}
+}
+
+func TestRole_String(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		r Role
+		s string
+	}{
+		{0, "Role(0)"},
+		{Pawn, "Pawn"},
+		{Knight, "Knight"},
+		{Bishop, "Bishop"},
+		{Rook, "Rook"},
+		{Queen, "Queen"},
+		{King, "King"},
+		{200, "Role(200)"},
+	}
+	for _, c := range cases {
+		if got := c.r.String(); got != c.s {
+			t.Errorf("Role(%d).String() = %s, want %s", c.r, got, c.s)
 		}
 	}
 }

@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 type Role uint8
 
@@ -36,4 +40,12 @@ func (r Role) String() string {
 	default:
 		return fmt.Sprintf("Role(%d)", uint8(r))
 	}
+}
+
+// Generate implements quick.Generator. It only generates pre-defined
+// constants of type Role.
+func (Role) Generate(rand *rand.Rand, size int) reflect.Value {
+	_ = size
+	x := []Role{Pawn, Knight, Bishop, Rook, Queen, King}
+	return reflect.ValueOf(x[rand.Intn(len(x))])
 }

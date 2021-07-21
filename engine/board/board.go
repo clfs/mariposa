@@ -1,8 +1,10 @@
-package core
+package board
 
 import (
 	"strconv"
 	"strings"
+
+	. "github.com/clfs/mariposa/engine/core"
 )
 
 type Board struct {
@@ -17,8 +19,8 @@ type Board struct {
 	FullMoveNumber int
 }
 
-// NewBoard returns a new board from a FEN.
-func NewBoard(fen string) (*Board, error) {
+// New returns a new board from a FEN.
+func New(fen string) (*Board, error) {
 	board := Board{}
 
 	fields := strings.Split(fen, " ")

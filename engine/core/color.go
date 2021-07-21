@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 type Color uint8
 
@@ -24,4 +28,10 @@ func (c Color) String() string {
 	default:
 		return fmt.Sprintf("Color(%d)", uint8(c))
 	}
+}
+
+// Generate implements quick.Generator. It only generates pre-defined
+// constants of type Color.
+func (Color) Generate(rand *rand.Rand, size int) reflect.Value {
+	return reflect.ValueOf(Color(rand.Intn(NumColors)))
 }
