@@ -95,3 +95,7 @@ func PieceFromString(s string) Piece {
 		return NoPiece
 	}
 }
+
+func PieceFromColorRole(c Color, r Role) Piece {
+	return Piece(uint8(c)<<3 | uint8(r))
+}
