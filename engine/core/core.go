@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 func (c Color) String() string {
 	switch c {
@@ -109,7 +112,7 @@ func (f File) String() string {
 	if !f.IsValid() {
 		return fmt.Sprintf("File(%d)", uint8(f))
 	}
-	return fmt.Sprintf("%v", rune('A'+uint8(f)))
+	return string('A' + uint8(f))
 }
 
 func (f File) IsValid() bool {
@@ -120,9 +123,20 @@ func (r Rank) String() string {
 	if !r.IsValid() {
 		return fmt.Sprintf("Rank(%d)", uint8(r))
 	}
-	return fmt.Sprintf("%v", rune('1'+uint8(r)))
+	return string('1' + uint8(r))
 }
 
 func (r Rank) IsValid() bool {
 	return r <= Rank8
+}
+
+func RankFromString(s string) Rank {
+	if len(s) != 1 {
+		return NoRank
+	}
+	r, err := strconv.Atoi(s)
+	if err != nil {
+		return NoRank
+	}
+	return Rank(r)
 }
