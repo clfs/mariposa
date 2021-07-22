@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/clfs/mariposa/core"
 	"github.com/davecgh/go-spew/spew"
-
-	"github.com/clfs/mariposa/engine"
 )
 
 func main() {
-	b, err := engine.NewBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+
+	b, err := core.NewBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,4 +18,5 @@ func main() {
 	spew.Dump(b)
 
 	fmt.Println(b.Pretty())
+
 }
