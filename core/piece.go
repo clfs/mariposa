@@ -30,6 +30,10 @@ func (p Piece) IsValid() bool {
 	return p.Color().IsValid() && p.Role().IsValid()
 }
 
+func (p Piece) IsEmpty() bool {
+	return !p.IsValid()
+}
+
 func (p Piece) Color() Color {
 	return Color(p >> 3)
 }
@@ -145,6 +149,10 @@ func PieceFromString(s string) Piece {
 	default:
 		return NoPiece
 	}
+}
+
+func PieceFromRune(r rune) Piece {
+	return PieceFromString(string(r))
 }
 
 func PieceFromColorRole(c Color, r Role) Piece {

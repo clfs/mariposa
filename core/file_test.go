@@ -7,6 +7,7 @@ import (
 )
 
 func TestFile_IsValid(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		f File
 		b bool
@@ -29,6 +30,7 @@ func TestFile_IsValid(t *testing.T) {
 }
 
 func TestFile_String(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		f File
 		s string

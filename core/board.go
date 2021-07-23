@@ -9,22 +9,19 @@ import (
 type Board struct {
 	Pieces         [NumSquares]Piece
 	SideToMove     Color
-	WhiteOOO       bool
-	WhiteOO        bool
-	BlackOOO       bool
-	BlackOO        bool
+	Castles        Castling
 	EPTarget       Square
-	HalfMoveClock  int
-	FullMoveNumber int
+	HalfMoveClock  uint64
+	FullMoveNumber uint64
 }
 
 // NewBoard returns a new board from a FEN.
-func NewBoard(fen string) (*Board, error) {
+func NewBoard(fen string) (Board, error) {
 	board := Board{}
 
 	fields := strings.Split(fen, " ")
 	if len(fields) != 6 {
-		return nil, &InvalidFENError{fen}
+		return Board{}, &InvalidFENError{fen}
 	}
 
 	// 1. Piece placement.
@@ -32,14 +29,14 @@ func NewBoard(fen string) (*Board, error) {
 	for _, ru := range fields[0] {
 		switch ru {
 		case 'P', 'p', 'N', 'n', 'B', 'b', 'R', 'r', 'Q', 'q', 'K', 'k':
-			board.Pieces[square] = PieceFromString(string(ru))
-			square += 1
+			board.Pieces[square] = PieceFromRune(ru)
+			square++
 		case '1', '2', '3', '4', '5', '6', '7', '8':
 			square += Square(ru - '0')
 		case '/':
 			square -= 16
 		default:
-			return nil, &InvalidFENError{fen}
+			return Board{}, &InvalidFENError{fen}
 		}
 	}
 
@@ -50,7 +47,7 @@ func NewBoard(fen string) (*Board, error) {
 	case "b":
 		board.SideToMove = Black
 	default:
-		return nil, &InvalidFENError{fen}
+		return Board{}, &InvalidFENError{fen}
 	}
 
 	// 3. Castling availability.
@@ -58,15 +55,15 @@ func NewBoard(fen string) (*Board, error) {
 		for _, ru := range fields[2] {
 			switch ru {
 			case 'K':
-				board.WhiteOO = true
+				board.Castles.WhiteOO = true
 			case 'Q':
-				board.WhiteOOO = true
+				board.Castles.WhiteOOO = true
 			case 'k':
-				board.BlackOO = true
+				board.Castles.BlackOO = true
 			case 'q':
-				board.BlackOOO = true
+				board.Castles.BlackOOO = true
 			default:
-				return nil, &InvalidFENError{fen}
+				return Board{}, &InvalidFENError{fen}
 			}
 		}
 	}
@@ -75,24 +72,69 @@ func NewBoard(fen string) (*Board, error) {
 	board.EPTarget = SquareFromString(fields[3])
 
 	// 5. Half move clock.
-	halfMoveClock, err := strconv.Atoi(fields[4])
+	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
 	if err != nil {
-		return nil, &InvalidFENError{fen}
+		return Board{}, &InvalidFENError{fen}
 	}
-	board.HalfMoveClock = halfMoveClock
+	board.HalfMoveClock = uint64(halfMoveClock)
 
 	// 6. Full move number.
-	fullMoveNumber, err := strconv.Atoi(fields[5])
+	fullMoveNumber, err := strconv.ParseUint(fields[5], 10, 64)
 	if err != nil {
-		return nil, &InvalidFENError{fen}
+		return Board{}, &InvalidFENError{fen}
 	}
-	board.FullMoveNumber = fullMoveNumber
+	board.FullMoveNumber = uint64(fullMoveNumber)
 
-	return &board, nil
+	return board, nil
+}
+
+func (b Board) PieceAt(s Square) Piece {
+	return b.Pieces[s]
+}
+
+func (b Board) PieceAtFileRank(f File, r Rank) Piece {
+	return b.PieceAt(SquareFromFileRank(f, r))
 }
 
 func (b Board) FEN() string {
-	return "not implemented"
+	// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+	var sb strings.Builder
+
+	for r := Rank8; r <= Rank8; r-- {
+		num := 0
+		for f := FileA; f <= FileH; f++ {
+			piece := b.PieceAtFileRank(f, r)
+			if piece.IsEmpty() {
+				num += 1
+			} else {
+				if num != 0 {
+					sb.WriteString(strconv.Itoa(num))
+				}
+				sb.WriteString(piece.String())
+				num = 0
+			}
+		}
+		if num != 0 {
+			sb.WriteString(strconv.Itoa(num))
+		}
+		if r != Rank1 {
+			sb.WriteString("/")
+		}
+	}
+
+	sb.WriteString(" ")
+	sb.WriteString(b.SideToMove.String())
+	sb.WriteString(" ")
+	sb.WriteString(b.EPTarget.String())
+	sb.WriteString(" ")
+	sb.WriteString(b.Castles.String())
+	sb.WriteString(" ")
+	sb.WriteString(strconv.FormatUint(b.HalfMoveClock, 10))
+	sb.WriteString(" ")
+	sb.WriteString(strconv.FormatUint(b.FullMoveNumber, 10))
+	sb.WriteString(" ")
+
+	return sb.String()
 }
 
 func (b Board) Pretty() string {
@@ -100,22 +142,16 @@ func (b Board) Pretty() string {
 
 	for r := Rank8; r <= Rank8; r-- {
 		for f := FileA; f <= FileH; f++ {
-			sq := SquareFromFileRank(f, r)
-			fmt.Fprintf(&sb, "%s ", b.Pieces[sq])
+			fmt.Fprintf(&sb, "%s ", b.PieceAtFileRank(f, r))
 		}
 		sb.WriteString("\n")
 	}
 
-	fmt.Fprintf(&sb, "Side to move: %s\n", b.SideToMove)
-	fmt.Fprintf(&sb, "En passant target: %s\n", b.EPTarget)
+	fmt.Fprintf(&sb, "Side to move: %s\n", b.SideToMove.DebugString())
+	fmt.Fprintf(&sb, "En passant target: %s\n", b.EPTarget.DebugString())
 	fmt.Fprintf(&sb, "Half move clock: %d\n", b.HalfMoveClock)
 	fmt.Fprintf(&sb, "Full move number: %d\n", b.FullMoveNumber)
-
-	fmt.Fprintf(&sb, "White O-O-O: %v\n", b.WhiteOOO)
-	fmt.Fprintf(&sb, "White O-O: %v\n", b.WhiteOO)
-	fmt.Fprintf(&sb, "Black O-O-O: %v\n", b.BlackOOO)
-	fmt.Fprintf(&sb, "Black O-O: %v\n", b.BlackOO)
-
+	fmt.Fprintf(&sb, "Castles: %v\n", b.Castles)
 	fmt.Fprintf(&sb, "FEN: %s", b.FEN())
 
 	return sb.String()
