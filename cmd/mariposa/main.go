@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/clfs/mariposa/core"
-	"github.com/davecgh/go-spew/spew"
 )
 
 func main() {
@@ -14,8 +13,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	spew.Dump(b)
 
 	fmt.Println(b.Pretty())
 

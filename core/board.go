@@ -98,18 +98,12 @@ func (b Board) FEN() string {
 func (b Board) Pretty() string {
 	var sb strings.Builder
 
-	for i := NumSquares - 1; i >= 0; i-- {
-		p := b.Pieces[i]
-		if p.IsValid() {
-			sb.WriteString(p.String())
-		} else {
-			sb.WriteString(".")
+	for r := Rank8; r <= Rank8; r-- {
+		for f := FileA; f <= FileH; f++ {
+			sq := SquareFromFileRank(f, r)
+			fmt.Fprintf(&sb, "%s ", b.Pieces[sq])
 		}
-		if i%8 == 0 {
-			sb.WriteString("\n")
-		} else {
-			sb.WriteString(" ")
-		}
+		sb.WriteString("\n")
 	}
 
 	fmt.Fprintf(&sb, "Side to move: %s\n", b.SideToMove)
