@@ -1,4 +1,4 @@
-package core_test
+package position_test
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	. "github.com/clfs/mariposa/core"
+	. "github.com/clfs/mariposa/position"
 )
 
 func TestPosition_FEN(t *testing.T) {

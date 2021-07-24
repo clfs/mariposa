@@ -1,17 +1,19 @@
-package core
+package position
 
 import (
 	"fmt"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/clfs/mariposa/core"
 )
 
 type Position struct {
-	Pieces         [NumSquares]Piece
-	SideToMove     Color
-	CastleRights   Castling
-	EPTarget       Square
+	Pieces         [core.NumSquares]core.Piece
+	SideToMove     core.Color
+	CastleRights   core.Castling
+	EPTarget       core.Square
 	HalfMoveClock  uint64
 	FullMoveNumber uint64
 }
@@ -26,14 +28,14 @@ func NewPosition(fen string) (Position, error) {
 	}
 
 	// 1. Piece placement.
-	square := A8
+	square := core.A8
 	for _, ru := range fields[0] {
 		switch ru {
 		case 'P', 'p', 'N', 'n', 'B', 'b', 'R', 'r', 'Q', 'q', 'K', 'k':
-			board.Pieces[square] = PieceFromRune(ru)
+			board.Pieces[square] = core.PieceFromRune(ru)
 			square++
 		case '1', '2', '3', '4', '5', '6', '7', '8':
-			square += Square(ru - '0')
+			square += core.Square(ru - '0')
 		case '/':
 			square -= 16
 		default:
@@ -44,15 +46,15 @@ func NewPosition(fen string) (Position, error) {
 	// 2. Side to move.
 	switch fields[1] {
 	case "w":
-		board.SideToMove = White
+		board.SideToMove = core.White
 	case "b":
-		board.SideToMove = Black
+		board.SideToMove = core.Black
 	default:
 		return Position{}, &InvalidFENError{fen}
 	}
 
 	// 3. Castling availability.
-	board.CastleRights = Castling{}
+	board.CastleRights = core.Castling{}
 	if fields[2] != "-" {
 		for _, ru := range fields[2] {
 			log.Println(ru)
@@ -72,7 +74,7 @@ func NewPosition(fen string) (Position, error) {
 	}
 
 	// 4. En passant target square.
-	board.EPTarget = SquareFromString(fields[3])
+	board.EPTarget = core.SquareFromString(fields[3])
 
 	// 5. Half move clock.
 	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
@@ -91,17 +93,17 @@ func NewPosition(fen string) (Position, error) {
 	return board, nil
 }
 
-func (p Position) PieceAt(s Square) Piece {
+func (p Position) PieceAt(s core.Square) core.Piece {
 	return p.Pieces[s]
 }
 
 func (p Position) FEN() string {
 	var sb strings.Builder
 
-	for r := Rank8; r <= Rank8; r-- {
+	for r := core.Rank8; r <= core.Rank8; r-- {
 		num := 0
-		for f := FileA; f <= FileH; f++ {
-			piece := p.PieceAt(SquareAt(f, r))
+		for f := core.FileA; f <= core.FileH; f++ {
+			piece := p.PieceAt(core.SquareAt(f, r))
 			if piece.IsEmpty() {
 				num += 1
 			} else {
@@ -115,7 +117,7 @@ func (p Position) FEN() string {
 		if num != 0 {
 			sb.WriteString(strconv.Itoa(num))
 		}
-		if r != Rank1 {
+		if r != core.Rank1 {
 			sb.WriteString("/")
 		}
 	}
@@ -137,9 +139,9 @@ func (p Position) FEN() string {
 func (p Position) Pretty() string {
 	var b strings.Builder
 
-	for r := Rank8; r <= Rank8; r-- {
-		for f := FileA; f <= FileH; f++ {
-			fmt.Fprintf(&b, "%s ", p.PieceAt(SquareAt(f, r)))
+	for r := core.Rank8; r <= core.Rank8; r-- {
+		for f := core.FileA; f <= core.FileH; f++ {
+			fmt.Fprintf(&b, "%s ", p.PieceAt(core.SquareAt(f, r)))
 		}
 		b.WriteString("\n")
 	}
