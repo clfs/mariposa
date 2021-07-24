@@ -10,6 +10,7 @@ import (
 )
 
 func TestBoard_FEN(t *testing.T) {
+	t.Parallel()
 	// Converting the board to FEN and back shouldn't change anything important.
 	f := func(b Board) bool {
 		fen := b.FEN()

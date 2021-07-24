@@ -43,6 +43,15 @@ func (c Color) DebugString() string {
 	}
 }
 
+// Equal returns whether two colors are equal. If both colors are invalid, they
+// are considered equal.
+func (c Color) Equal(o Color) bool {
+	if !c.IsValid() && !o.IsValid() {
+		return true
+	}
+	return c == o
+}
+
 // Generate implements quick.Generator. It only generates pre-defined
 // constants of type Color.
 func (Color) Generate(rand *rand.Rand, size int) reflect.Value {

@@ -108,11 +108,11 @@ func (s Square) Rank() Rank {
 
 // Equal returns whether two squares are equal. If both squares are off the
 // board, they are considered equal.
-func (s Square) Equal(t Square) bool {
-	if !s.IsValid() && !t.IsValid() {
+func (s Square) Equal(o Square) bool {
+	if !s.IsValid() && !o.IsValid() {
 		return true
 	}
-	return s == t
+	return s == o
 }
 
 func SquareFromString(s string) Square {

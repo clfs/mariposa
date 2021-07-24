@@ -144,12 +144,6 @@ func (b Board) Pretty() string {
 		}
 		sb.WriteString("\n")
 	}
-
-	fmt.Fprintf(&sb, "Side to move: %s\n", b.SideToMove.DebugString())
-	fmt.Fprintf(&sb, "En passant target: %s\n", b.EPTarget.DebugString())
-	fmt.Fprintf(&sb, "Half move clock: %d\n", b.HalfMoveClock)
-	fmt.Fprintf(&sb, "Full move number: %d\n", b.FullMoveNumber)
-	fmt.Fprintf(&sb, "Castle rights: %v\n", b.CastleRights)
 	fmt.Fprintf(&sb, "FEN: %s", b.FEN())
 
 	return sb.String()
