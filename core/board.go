@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -9,7 +10,7 @@ import (
 type Board struct {
 	Pieces         [NumSquares]Piece
 	SideToMove     Color
-	Castles        Castling
+	CastleRights   Castling
 	EPTarget       Square
 	HalfMoveClock  uint64
 	FullMoveNumber uint64
@@ -51,17 +52,19 @@ func NewBoard(fen string) (Board, error) {
 	}
 
 	// 3. Castling availability.
+	board.CastleRights = Castling{}
 	if fields[2] != "-" {
 		for _, ru := range fields[2] {
+			log.Println(ru)
 			switch ru {
 			case 'K':
-				board.Castles.WhiteOO = true
+				board.CastleRights.WhiteOO = true
 			case 'Q':
-				board.Castles.WhiteOOO = true
+				board.CastleRights.WhiteOOO = true
 			case 'k':
-				board.Castles.BlackOO = true
+				board.CastleRights.BlackOO = true
 			case 'q':
-				board.Castles.BlackOOO = true
+				board.CastleRights.BlackOOO = true
 			default:
 				return Board{}, &InvalidFENError{fen}
 			}
@@ -92,10 +95,6 @@ func (b Board) PieceAt(s Square) Piece {
 	return b.Pieces[s]
 }
 
-func (b Board) PieceAtFileRank(f File, r Rank) Piece {
-	return b.PieceAt(SquareFromFileRank(f, r))
-}
-
 func (b Board) FEN() string {
 	// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 	var sb strings.Builder
@@ -103,7 +102,7 @@ func (b Board) FEN() string {
 	for r := Rank8; r <= Rank8; r-- {
 		num := 0
 		for f := FileA; f <= FileH; f++ {
-			piece := b.PieceAtFileRank(f, r)
+			piece := b.PieceAt(SquareAt(f, r))
 			if piece.IsEmpty() {
 				num += 1
 			} else {
@@ -125,14 +124,13 @@ func (b Board) FEN() string {
 	sb.WriteString(" ")
 	sb.WriteString(b.SideToMove.String())
 	sb.WriteString(" ")
-	sb.WriteString(b.EPTarget.String())
+	sb.WriteString(b.CastleRights.String())
 	sb.WriteString(" ")
-	sb.WriteString(b.Castles.String())
+	sb.WriteString(b.EPTarget.String())
 	sb.WriteString(" ")
 	sb.WriteString(strconv.FormatUint(b.HalfMoveClock, 10))
 	sb.WriteString(" ")
 	sb.WriteString(strconv.FormatUint(b.FullMoveNumber, 10))
-	sb.WriteString(" ")
 
 	return sb.String()
 }
@@ -142,7 +140,7 @@ func (b Board) Pretty() string {
 
 	for r := Rank8; r <= Rank8; r-- {
 		for f := FileA; f <= FileH; f++ {
-			fmt.Fprintf(&sb, "%s ", b.PieceAtFileRank(f, r))
+			fmt.Fprintf(&sb, "%s ", b.PieceAt(SquareAt(f, r)))
 		}
 		sb.WriteString("\n")
 	}
@@ -151,7 +149,7 @@ func (b Board) Pretty() string {
 	fmt.Fprintf(&sb, "En passant target: %s\n", b.EPTarget.DebugString())
 	fmt.Fprintf(&sb, "Half move clock: %d\n", b.HalfMoveClock)
 	fmt.Fprintf(&sb, "Full move number: %d\n", b.FullMoveNumber)
-	fmt.Fprintf(&sb, "Castles: %v\n", b.Castles)
+	fmt.Fprintf(&sb, "Castle rights: %v\n", b.CastleRights)
 	fmt.Fprintf(&sb, "FEN: %s", b.FEN())
 
 	return sb.String()

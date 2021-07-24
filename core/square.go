@@ -74,12 +74,13 @@ const (
 	NoSquare
 )
 
+// IsValid returns true if a square is on the board.
 func (s Square) IsValid() bool {
 	return s.File().IsValid() && s.Rank().IsValid()
 }
 
-// String returns strings like "e3" and "a1". It returns "-" if
-// the square is invalid.
+// String returns strings like "a1" and "h8". It returns "-" if the square is
+// invalid.
 func (s Square) String() string {
 	if !s.IsValid() {
 		return "-"
@@ -87,6 +88,9 @@ func (s Square) String() string {
 	return fmt.Sprintf("%s%s", s.File(), s.Rank())
 }
 
+// DebugString returns a string that can be used for debugging. For valid
+// squares, it acts identically to Square.String. For invalid squares, it
+// returns a string like "Square(79)", depending on its underlying value.
 func (s Square) DebugString() string {
 	if !s.IsValid() {
 		return fmt.Sprintf("Square(%d)", uint8(s))
@@ -102,6 +106,15 @@ func (s Square) Rank() Rank {
 	return Rank(s / 8)
 }
 
+// Equal returns whether two squares are equal. If both squares are off the
+// board, they are considered equal.
+func (s Square) Equal(t Square) bool {
+	if !s.IsValid() && !t.IsValid() {
+		return true
+	}
+	return s == t
+}
+
 func SquareFromString(s string) Square {
 	if len(s) != 2 {
 		return NoSquare
@@ -111,9 +124,9 @@ func SquareFromString(s string) Square {
 	if !f.IsValid() || !r.IsValid() {
 		return NoSquare
 	}
-	return SquareFromFileRank(f, r)
+	return SquareAt(f, r)
 }
 
-func SquareFromFileRank(f File, r Rank) Square {
-	return Square(uint8(r)<<3 | uint8(f))
+func SquareAt(f File, r Rank) Square {
+	return Square(uint8(r)*8 + uint8(f))
 }

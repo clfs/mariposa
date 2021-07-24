@@ -87,13 +87,13 @@ func TestSquareFromString(t *testing.T) {
 	}
 }
 
-func TestSquareFromFileRank(t *testing.T) {
+func TestSquareAt(t *testing.T) {
 	t.Parallel()
 	f := func(f File, r Rank) bool {
 		if !f.IsValid() || !r.IsValid() {
 			return true // skip this run
 		}
-		s := SquareFromFileRank(f, r)
+		s := SquareAt(f, r)
 		return s.IsValid() && s.File() == f && s.Rank() == r
 	}
 	if err := quick.Check(f, nil); err != nil {
