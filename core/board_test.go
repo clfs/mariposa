@@ -9,13 +9,13 @@ import (
 	. "github.com/clfs/mariposa/core"
 )
 
-func TestBoard_FEN(t *testing.T) {
+func TestPosition_FEN(t *testing.T) {
 	t.Parallel()
-	// Converting the board to FEN and back shouldn't change anything important.
-	f := func(b Board) bool {
-		fen := b.FEN()
-		bNew, err := NewBoard(fen)
-		return err == nil && cmp.Equal(b, bNew)
+	// Converting a position to FEN and back shouldn't change anything.
+	f := func(p Position) bool {
+		fen := p.FEN()
+		pNew, err := NewPosition(fen)
+		return err == nil && cmp.Equal(p, pNew)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)

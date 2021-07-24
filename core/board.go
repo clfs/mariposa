@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type Board struct {
+type Position struct {
 	Pieces         [NumSquares]Piece
 	SideToMove     Color
 	CastleRights   Castling
@@ -16,13 +16,13 @@ type Board struct {
 	FullMoveNumber uint64
 }
 
-// NewBoard returns a new board from a FEN.
-func NewBoard(fen string) (Board, error) {
-	board := Board{}
+// NewPosition returns a new position from a FEN.
+func NewPosition(fen string) (Position, error) {
+	board := Position{}
 
 	fields := strings.Split(fen, " ")
 	if len(fields) != 6 {
-		return Board{}, &InvalidFENError{fen}
+		return Position{}, &InvalidFENError{fen}
 	}
 
 	// 1. Piece placement.
@@ -37,7 +37,7 @@ func NewBoard(fen string) (Board, error) {
 		case '/':
 			square -= 16
 		default:
-			return Board{}, &InvalidFENError{fen}
+			return Position{}, &InvalidFENError{fen}
 		}
 	}
 
@@ -48,7 +48,7 @@ func NewBoard(fen string) (Board, error) {
 	case "b":
 		board.SideToMove = Black
 	default:
-		return Board{}, &InvalidFENError{fen}
+		return Position{}, &InvalidFENError{fen}
 	}
 
 	// 3. Castling availability.
@@ -66,7 +66,7 @@ func NewBoard(fen string) (Board, error) {
 			case 'q':
 				board.CastleRights.BlackOOO = true
 			default:
-				return Board{}, &InvalidFENError{fen}
+				return Position{}, &InvalidFENError{fen}
 			}
 		}
 	}
@@ -77,32 +77,31 @@ func NewBoard(fen string) (Board, error) {
 	// 5. Half move clock.
 	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
 	if err != nil {
-		return Board{}, &InvalidFENError{fen}
+		return Position{}, &InvalidFENError{fen}
 	}
 	board.HalfMoveClock = uint64(halfMoveClock)
 
 	// 6. Full move number.
 	fullMoveNumber, err := strconv.ParseUint(fields[5], 10, 64)
 	if err != nil {
-		return Board{}, &InvalidFENError{fen}
+		return Position{}, &InvalidFENError{fen}
 	}
 	board.FullMoveNumber = uint64(fullMoveNumber)
 
 	return board, nil
 }
 
-func (b Board) PieceAt(s Square) Piece {
-	return b.Pieces[s]
+func (p Position) PieceAt(s Square) Piece {
+	return p.Pieces[s]
 }
 
-func (b Board) FEN() string {
-	// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+func (p Position) FEN() string {
 	var sb strings.Builder
 
 	for r := Rank8; r <= Rank8; r-- {
 		num := 0
 		for f := FileA; f <= FileH; f++ {
-			piece := b.PieceAt(SquareAt(f, r))
+			piece := p.PieceAt(SquareAt(f, r))
 			if piece.IsEmpty() {
 				num += 1
 			} else {
@@ -122,29 +121,29 @@ func (b Board) FEN() string {
 	}
 
 	sb.WriteString(" ")
-	sb.WriteString(b.SideToMove.String())
+	sb.WriteString(p.SideToMove.String())
 	sb.WriteString(" ")
-	sb.WriteString(b.CastleRights.String())
+	sb.WriteString(p.CastleRights.String())
 	sb.WriteString(" ")
-	sb.WriteString(b.EPTarget.String())
+	sb.WriteString(p.EPTarget.String())
 	sb.WriteString(" ")
-	sb.WriteString(strconv.FormatUint(b.HalfMoveClock, 10))
+	sb.WriteString(strconv.FormatUint(p.HalfMoveClock, 10))
 	sb.WriteString(" ")
-	sb.WriteString(strconv.FormatUint(b.FullMoveNumber, 10))
+	sb.WriteString(strconv.FormatUint(p.FullMoveNumber, 10))
 
 	return sb.String()
 }
 
-func (b Board) Pretty() string {
+func (p Position) Pretty() string {
 	var sb strings.Builder
 
 	for r := Rank8; r <= Rank8; r-- {
 		for f := FileA; f <= FileH; f++ {
-			fmt.Fprintf(&sb, "%s ", b.PieceAt(SquareAt(f, r)))
+			fmt.Fprintf(&sb, "%s ", p.PieceAt(SquareAt(f, r)))
 		}
 		sb.WriteString("\n")
 	}
-	fmt.Fprintf(&sb, "FEN: %s", b.FEN())
+	fmt.Fprintf(&sb, "FEN: %s", p.FEN())
 
 	return sb.String()
 }
