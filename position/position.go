@@ -12,7 +12,7 @@ import (
 type Position struct {
 	Pieces         [core.NumSquares]core.Piece
 	SideToMove     core.Color
-	CastleRights   core.Castling
+	CastleRights   Castling
 	EPTarget       core.Square
 	HalfMoveClock  uint64
 	FullMoveNumber uint64
@@ -54,7 +54,7 @@ func NewPosition(fen string) (Position, error) {
 	}
 
 	// 3. Castling availability.
-	board.CastleRights = core.Castling{}
+	board.CastleRights = Castling{}
 	if fields[2] != "-" {
 		for _, ru := range fields[2] {
 			log.Println(ru)
