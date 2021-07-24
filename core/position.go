@@ -135,15 +135,15 @@ func (p Position) FEN() string {
 }
 
 func (p Position) Pretty() string {
-	var sb strings.Builder
+	var b strings.Builder
 
 	for r := Rank8; r <= Rank8; r-- {
 		for f := FileA; f <= FileH; f++ {
-			fmt.Fprintf(&sb, "%s ", p.PieceAt(SquareAt(f, r)))
+			fmt.Fprintf(&b, "%s ", p.PieceAt(SquareAt(f, r)))
 		}
-		sb.WriteString("\n")
+		b.WriteString("\n")
 	}
-	fmt.Fprintf(&sb, "FEN: %s", p.FEN())
+	fmt.Fprintf(&b, "FEN: %s", p.FEN())
 
-	return sb.String()
+	return b.String()
 }
