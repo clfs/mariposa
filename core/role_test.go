@@ -28,7 +28,7 @@ func TestRole_IsValid(t *testing.T) {
 	}
 }
 
-func TestRole_String(t *testing.T) {
+func TestRole_DebugString(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
 		r Role
@@ -44,7 +44,7 @@ func TestRole_String(t *testing.T) {
 		{200, "Role(200)"},
 	}
 	for _, c := range cases {
-		if got := c.r.String(); got != c.s {
+		if got := c.r.DebugString(); got != c.s {
 			t.Errorf("Role(%d).String() = %s, want %s", c.r, got, c.s)
 		}
 	}

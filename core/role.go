@@ -23,7 +23,7 @@ func (r Role) IsValid() bool {
 	return r >= Pawn && r <= King
 }
 
-func (r Role) String() string {
+func (r Role) DebugString() string {
 	switch r {
 	case Pawn:
 		return "Pawn"
@@ -39,6 +39,27 @@ func (r Role) String() string {
 		return "King"
 	default:
 		return fmt.Sprintf("Role(%d)", uint8(r))
+	}
+}
+
+// String returns strings like "p" and "n". If the role is invalid, an empty
+// string is returned.
+func (r Role) String() string {
+	switch r {
+	case Pawn:
+		return "p"
+	case Knight:
+		return "n"
+	case Bishop:
+		return "b"
+	case Rook:
+		return "r"
+	case Queen:
+		return "q"
+	case King:
+		return "k"
+	default:
+		return ""
 	}
 }
 

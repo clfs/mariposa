@@ -24,7 +24,7 @@ func NewPosition(fen string) (Position, error) {
 
 	fields := strings.Split(fen, " ")
 	if len(fields) != 6 {
-		return Position{}, &InvalidFENError{fen}
+		return Position{}, &ParseFENError{fen}
 	}
 
 	// 1. Piece placement.
@@ -39,7 +39,7 @@ func NewPosition(fen string) (Position, error) {
 		case '/':
 			square -= 16
 		default:
-			return Position{}, &InvalidFENError{fen}
+			return Position{}, &ParseFENError{fen}
 		}
 	}
 
@@ -50,7 +50,7 @@ func NewPosition(fen string) (Position, error) {
 	case "b":
 		board.SideToMove = core.Black
 	default:
-		return Position{}, &InvalidFENError{fen}
+		return Position{}, &ParseFENError{fen}
 	}
 
 	// 3. Castling availability.
@@ -68,7 +68,7 @@ func NewPosition(fen string) (Position, error) {
 			case 'q':
 				board.CastleRights.BlackOOO = true
 			default:
-				return Position{}, &InvalidFENError{fen}
+				return Position{}, &ParseFENError{fen}
 			}
 		}
 	}
@@ -79,14 +79,14 @@ func NewPosition(fen string) (Position, error) {
 	// 5. Half move clock.
 	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
 	if err != nil {
-		return Position{}, &InvalidFENError{fen}
+		return Position{}, &ParseFENError{fen}
 	}
 	board.HalfMoveClock = uint64(halfMoveClock)
 
 	// 6. Full move number.
 	fullMoveNumber, err := strconv.ParseUint(fields[5], 10, 64)
 	if err != nil {
-		return Position{}, &InvalidFENError{fen}
+		return Position{}, &ParseFENError{fen}
 	}
 	board.FullMoveNumber = uint64(fullMoveNumber)
 
@@ -148,4 +148,12 @@ func (p Position) Pretty() string {
 	fmt.Fprintf(&b, "FEN: %s", p.FEN())
 
 	return b.String()
+}
+
+func (p Position) PseudoLegalMoves() []Move {
+	return nil
+}
+
+func (p Position) LegalMoves() []Move {
+	return nil
 }
