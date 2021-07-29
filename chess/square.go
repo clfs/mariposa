@@ -72,6 +72,10 @@ const (
 	H8               // h8
 )
 
+func (s Square) Value() uint8 {
+	return uint8(s)
+}
+
 func (s Square) Valid() bool {
 	return s <= H8
 }
@@ -88,15 +92,11 @@ func (s Square) Rank() Rank {
 	return Rank(s / 8)
 }
 
-func (s Square) Value() uint8 {
-	return uint8(s)
-}
-
 func SquareAt(f File, r Rank) (Square, error) {
 	if f.Invalid() || r.Invalid() {
 		return 0, fmt.Errorf("TODO")
 	}
-	return Square(f.Value()*8 + r.Value()), nil
+	return Square(r.Value()*8 + f.Value()), nil
 }
 
 func ParseSquare(s string) (Square, error) {

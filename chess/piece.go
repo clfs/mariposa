@@ -1,6 +1,6 @@
 package chess
 
-//go:generate stringer -type Piece
+//go:generate stringer -type Piece -linecomment=true
 type Piece uint8
 
 const (
@@ -25,7 +25,7 @@ func (p Piece) Value() uint8 {
 }
 
 func (p Piece) Valid() bool {
-	return p.Color().Valid() && p.Role().Valid()
+	return (WhitePawn <= p && p <= WhiteKing) || (BlackPawn <= p && p <= BlackKing)
 }
 
 func (p Piece) Invalid() bool {
