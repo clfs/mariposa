@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/clfs/mariposa/core"
+	"github.com/clfs/mariposa/chess"
 )
 
 type Position struct {
-	Pieces         [core.NumSquares]core.Piece
-	SideToMove     core.Color
+	Pieces         [64]chess.Piece
+	SideToMove     chess.Color
 	CastleRights   Castling
-	EPTarget       core.Square
+	EPTarget       chess.Square
 	HalfMoveClock  uint64
 	FullMoveNumber uint64
 }
@@ -28,14 +28,18 @@ func NewPosition(fen string) (Position, error) {
 	}
 
 	// 1. Piece placement.
-	square := core.A8
+	square := chess.A8
 	for _, ru := range fields[0] {
 		switch ru {
 		case 'P', 'p', 'N', 'n', 'B', 'b', 'R', 'r', 'Q', 'q', 'K', 'k':
-			board.Pieces[square] = core.PieceFromRune(ru)
+			piece, err := chess.ParsePiece(string(ru))
+			if err != nil {
+				return Position{}, err
+			}
+			board.Pieces[square] = piece
 			square++
 		case '1', '2', '3', '4', '5', '6', '7', '8':
-			square += core.Square(ru - '0')
+			square += chess.Square(ru - '0')
 		case '/':
 			square -= 16
 		default:
@@ -46,9 +50,9 @@ func NewPosition(fen string) (Position, error) {
 	// 2. Side to move.
 	switch fields[1] {
 	case "w":
-		board.SideToMove = core.White
+		board.SideToMove = chess.White
 	case "b":
-		board.SideToMove = core.Black
+		board.SideToMove = chess.Black
 	default:
 		return Position{}, &ParseFENError{fen}
 	}
@@ -74,7 +78,12 @@ func NewPosition(fen string) (Position, error) {
 	}
 
 	// 4. En passant target square.
-	board.EPTarget = core.SquareFromString(fields[3])
+	square, err := chess.ParseSquare(fields[3])
+	if err != nil {
+		board.EPTarget = chess.Square(0xff) // TODO: fix
+	} else {
+		board.EPTarget = square
+	}
 
 	// 5. Half move clock.
 	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
@@ -93,18 +102,22 @@ func NewPosition(fen string) (Position, error) {
 	return board, nil
 }
 
-func (p Position) PieceAt(s core.Square) core.Piece {
+func (p Position) PieceAt(s chess.Square) chess.Piece {
 	return p.Pieces[s]
 }
 
-func (p Position) FEN() string {
+func (p Position) FEN() (string, error) {
 	var sb strings.Builder
 
-	for r := core.Rank8; r <= core.Rank8; r-- {
+	for r := chess.Rank8; r <= chess.Rank8; r-- {
 		num := 0
-		for f := core.FileA; f <= core.FileH; f++ {
-			piece := p.PieceAt(core.SquareAt(f, r))
-			if piece.IsEmpty() {
+		for f := chess.FileA; f <= chess.FileH; f++ {
+			square, err := chess.SquareAt(f, r)
+			if err != nil {
+				return "", err
+			}
+			piece := p.PieceAt(square)
+			if piece.Invalid() {
 				num += 1
 			} else {
 				if num != 0 {
@@ -117,7 +130,7 @@ func (p Position) FEN() string {
 		if num != 0 {
 			sb.WriteString(strconv.Itoa(num))
 		}
-		if r != core.Rank1 {
+		if r != chess.Rank1 {
 			sb.WriteString("/")
 		}
 	}
@@ -133,21 +146,29 @@ func (p Position) FEN() string {
 	sb.WriteString(" ")
 	sb.WriteString(strconv.FormatUint(p.FullMoveNumber, 10))
 
-	return sb.String()
+	return sb.String(), nil
 }
 
-func (p Position) Pretty() string {
+func (p Position) Pretty() (string, error) {
 	var b strings.Builder
 
-	for r := core.Rank8; r <= core.Rank8; r-- {
-		for f := core.FileA; f <= core.FileH; f++ {
-			fmt.Fprintf(&b, "%s ", p.PieceAt(core.SquareAt(f, r)))
+	for r := chess.Rank8; r <= chess.Rank8; r-- {
+		for f := chess.FileA; f <= chess.FileH; f++ {
+			square, err := chess.SquareAt(f, r)
+			if err != nil {
+				return "", err
+			}
+			fmt.Fprintf(&b, "%s ", p.PieceAt(square))
 		}
 		b.WriteString("\n")
 	}
-	fmt.Fprintf(&b, "FEN: %s", p.FEN())
+	fen, err := p.FEN()
+	if err != nil {
+		return "", err
+	}
+	fmt.Fprintf(&b, "FEN: %s", fen)
 
-	return b.String()
+	return b.String(), nil
 }
 
 func (p Position) PseudoLegalMoves() []Move {

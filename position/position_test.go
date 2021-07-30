@@ -13,7 +13,10 @@ func TestPosition_FEN(t *testing.T) {
 	t.Parallel()
 	// Converting a position to FEN and back shouldn't change anything.
 	f := func(p Position) bool {
-		fen := p.FEN()
+		fen, err := p.FEN()
+		if err != nil {
+			return true // skip
+		}
 		pNew, err := NewPosition(fen)
 		return err == nil && cmp.Equal(p, pNew)
 	}

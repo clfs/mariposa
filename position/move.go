@@ -3,13 +3,13 @@ package position
 import (
 	"fmt"
 
-	"github.com/clfs/mariposa/core"
+	"github.com/clfs/mariposa/chess"
 )
 
 type Move struct {
-	From      core.Square
-	To        core.Square
-	Promotion core.Role
+	From      chess.Square
+	To        chess.Square
+	Promotion chess.Role
 }
 
 func MoveFromString(s string) (Move, error) {
