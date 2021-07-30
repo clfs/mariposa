@@ -1,4 +1,4 @@
-package bitboard
+package chess
 
 type Bitboard uint64
 
@@ -12,4 +12,8 @@ func (b *Bitboard) Value() uint64 {
 
 func (b *Bitboard) Clear() {
 	*b = 0
+}
+
+func (b *Bitboard) Set(s Square) {
+	*b |= (1 << s.Value())
 }

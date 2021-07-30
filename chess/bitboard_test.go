@@ -1,10 +1,10 @@
-package bitboard_test
+package chess_test
 
 import (
 	"testing"
 	"testing/quick"
 
-	. "github.com/clfs/mariposa/bitboard"
+	. "github.com/clfs/mariposa/chess"
 )
 
 func TestBitboard_Value(t *testing.T) {

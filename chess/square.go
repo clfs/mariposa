@@ -1,9 +1,13 @@
 package chess
 
-import "fmt"
+import (
+	"fmt"
+)
 
 //go:generate stringer -type=Square -linecomment=true
 type Square uint8
+
+const NumSquares = 64
 
 const (
 	A1 Square = iota // a1
@@ -92,6 +96,10 @@ func (s Square) Rank() Rank {
 	return Rank(s / 8)
 }
 
+func (s Square) Bitboard() Bitboard {
+	return Bitboard(1 << s.Value())
+}
+
 func SquareAt(f File, r Rank) (Square, error) {
 	if f.Invalid() || r.Invalid() {
 		return 0, fmt.Errorf("TODO")
@@ -105,8 +113,5 @@ func ParseSquare(s string) (Square, error) {
 	}
 	f := File(s[0] - 'a')
 	r := Rank(s[1] - '1')
-	if f.Invalid() || r.Invalid() {
-		return 0, fmt.Errorf("TODO")
-	}
 	return SquareAt(f, r)
 }
