@@ -1,16 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"os"
 
-	"github.com/clfs/mariposa/position"
+	"github.com/clfs/mariposa/uci"
 )
 
 func main() {
-	s := "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-	p, err := position.NewPosition(s)
-	if err != nil {
-		panic(err)
+	if err := uci.New(os.Stdin, os.Stdout).Run(); err != nil {
+		log.Fatalf("error: %s\n", err)
 	}
-	fmt.Println(p.Pretty())
 }

@@ -1,110 +1,124 @@
-// Package uci implements a subset of the UCI protocol, along with certain
-// extensions.
+// Package uci implements a UCI client specifically for the Mariposa engine.
 package uci
 
 import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"strings"
+	"sync"
 
+	"github.com/clfs/mariposa/chess"
 	"github.com/clfs/mariposa/engine"
 )
 
-func Run(w io.Writer, r io.Reader) error {
-	s := bufio.NewScanner(r)
+type Client struct {
+	r io.Reader
+	w io.Writer
+	e *engine.Engine
+	m sync.Mutex // protects w
+}
+
+func New(r io.Reader, w io.Writer) *Client {
+	e := engine.New()
+	return &Client{r: r, w: w, e: e}
+}
+
+func (c *Client) Run() error {
+	s := bufio.NewScanner(c.r)
 	for s.Scan() {
-		command := s.Text()
-		if err := Execute(w, command); err != nil {
+		if err := c.dispatch(s.Text()); err != nil {
 			return err
 		}
 	}
 	return s.Err()
 }
 
-func Execute(w io.Writer, command string) error {
+func (c *Client) dispatch(command string) error {
 	fields := strings.Fields(command)
 	if len(fields) == 0 {
 		return nil // ignore empty lines
 	}
 	first, rest := fields[0], fields[1:]
 
-	// todo: use register/dispatch instead of switch/case
-	var handler func(w io.Writer, args []string) error
 	switch first {
 	case "uci":
-		handler = UCI
+		return c.uci()
 	case "isready":
-		handler = IsReady
-	case "setoption":
-		handler = SetOption
+		return c.isReady()
 	case "ucinewgame":
-		handler = UCINewGame
+		return c.uciNewGame()
 	case "position":
-		handler = Position
+		return c.position(rest)
 	case "go":
-		handler = Go
-	case "stop":
-		handler = Stop
-	case "quit", "exit", "kill":
-		handler = Quit
+		return c.goCommand(rest)
+	case "quit":
+		return fmt.Errorf("todo: quit error message")
 	default:
-		handler = Unknown
+		return fmt.Errorf("unknown command error todo")
+	}
+}
+
+func (c *Client) uci() error {
+	log.Println("reached")
+	c.m.Lock()
+	fmt.Fprintf(c.w, "id name %s\n", engine.Name)
+	fmt.Fprintf(c.w, "id author %s\n", engine.Author)
+	fmt.Fprintf(c.w, "uciok\n")
+	c.m.Unlock()
+	return nil
+}
+
+func (c *Client) isReady() error {
+	for !c.e.IsReady() {
+		// wait. todo: better implementation than polling, since this will spam
+	}
+	c.m.Lock()
+	fmt.Fprintf(c.w, "readyok\n")
+	c.m.Unlock()
+	return nil
+}
+
+func (c *Client) uciNewGame() error {
+	c.e.NewGame()
+	return nil
+}
+
+func (c *Client) position(args []string) error {
+	if len(args) < 2 {
+		return fmt.Errorf("todo, not enough args")
 	}
 
-	return handler(w, rest)
+	if args[0] == "fen" {
+		fen := strings.Join(args[1:], "")
+		return c.e.SetFEN(fen)
+	}
+
+	if args[0] == "startpos" {
+		for _, move := range args[1:] {
+			m, err := chess.ParseMove(move)
+			if err != nil {
+				return err
+			}
+			if err := c.e.Move(m); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	return fmt.Errorf("todo, error 182348172")
 }
 
-func UCI(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "id name %s\n", engine.Name)
-	fmt.Fprintf(w, "id author %s\n", engine.Author)
-	fmt.Fprintf(w, "uciok\n")
+func (c *Client) goCommand(args []string) error {
+	_ = args // todo implement arg handling
+	bestMove, err := c.e.BestMove()
+	if err != nil {
+		return err
+	}
+	c.m.Lock()
+	fmt.Fprintf(c.w, "bestmove %s\n", bestMove)
+	c.m.Unlock()
 	return nil
-}
-
-func IsReady(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "readyok\n")
-	return nil
-}
-
-func SetOption(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "not implemented yet\n")
-	return nil
-}
-
-func UCINewGame(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "not implemented yet\n")
-	return nil
-}
-
-func Position(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "not implemented yet\n")
-	return nil
-}
-
-func Go(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "not implemented yet\n")
-	return nil
-}
-
-func Stop(w io.Writer, args []string) error {
-	_ = args
-	fmt.Fprintf(w, "not implemented yet\n")
-	return nil
-}
-
-func Quit(w io.Writer, args []string) error {
-	_, _ = w, args
-	return fmt.Errorf("quit")
-}
-
-func Unknown(w io.Writer, args []string) error {
-	_, _ = w, args
-	return fmt.Errorf("unknown command")
 }
