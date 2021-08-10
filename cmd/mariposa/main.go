@@ -8,7 +8,5 @@ import (
 )
 
 func main() {
-	if err := uci.New(os.Stdin, os.Stdout).Run(); err != nil {
-		log.Fatalf("error: %s\n", err)
-	}
+	log.Fatal(uci.New(os.Stdin, os.Stdout).Run())
 }

@@ -32,10 +32,10 @@ func TestCastling_Clear(t *testing.T) {
 func TestCastling_NoRights(t *testing.T) {
 	t.Parallel()
 	f := func(c Castling) bool {
-		c.Clear(FriendOO)
-		c.Clear(FriendOOO)
-		c.Clear(EnemyOO)
-		c.Clear(EnemyOOO)
+		c.Clear(WhiteOO)
+		c.Clear(WhiteOOO)
+		c.Clear(BlackOO)
+		c.Clear(BlackOOO)
 		return c.NoRights()
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -49,21 +49,21 @@ func TestCastling_String(t *testing.T) {
 		want string
 	}{
 		{Castling(0), "-"},
-		{Castling(FriendOO), "K"},
-		{Castling(FriendOOO), "Q"},
-		{Castling(EnemyOO), "k"},
-		{Castling(EnemyOOO), "q"},
-		{Castling(FriendOO | FriendOOO), "KQ"},
-		{Castling(FriendOO | EnemyOO), "Kk"},
-		{Castling(FriendOO | EnemyOOO), "Kq"},
-		{Castling(FriendOOO | EnemyOO), "Qk"},
-		{Castling(FriendOOO | EnemyOOO), "Qq"},
-		{Castling(EnemyOO | EnemyOOO), "kq"},
-		{Castling(FriendOO | FriendOOO | EnemyOO), "KQk"},
-		{Castling(FriendOO | FriendOOO | EnemyOOO), "KQq"},
-		{Castling(FriendOO | EnemyOO | EnemyOOO), "Kkq"},
-		{Castling(FriendOOO | EnemyOO | EnemyOOO), "Qkq"},
-		{Castling(FriendOO | FriendOOO | EnemyOO | EnemyOOO), "KQkq"},
+		{Castling(WhiteOO), "K"},
+		{Castling(WhiteOOO), "Q"},
+		{Castling(BlackOO), "k"},
+		{Castling(BlackOOO), "q"},
+		{Castling(WhiteOO | WhiteOOO), "KQ"},
+		{Castling(WhiteOO | BlackOO), "Kk"},
+		{Castling(WhiteOO | BlackOOO), "Kq"},
+		{Castling(WhiteOOO | BlackOO), "Qk"},
+		{Castling(WhiteOOO | BlackOOO), "Qq"},
+		{Castling(BlackOO | BlackOOO), "kq"},
+		{Castling(WhiteOO | WhiteOOO | BlackOO), "KQk"},
+		{Castling(WhiteOO | WhiteOOO | BlackOOO), "KQq"},
+		{Castling(WhiteOO | BlackOO | BlackOOO), "Kkq"},
+		{Castling(WhiteOOO | BlackOO | BlackOOO), "Qkq"},
+		{Castling(WhiteOO | WhiteOOO | BlackOO | BlackOOO), "KQkq"},
 	}
 	for _, c := range cases {
 		if got := c.c.String(); got != c.want {

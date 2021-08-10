@@ -1,23 +1,22 @@
 package chess
 
 type Board struct {
-	allies       Bitboard
-	enemies      Bitboard
-	pawns        Bitboard
-	knights      Bitboard
-	cardinals    Bitboard // N, E, S, W
-	ordinals     Bitboard // NW, NE, SE, SW
-	friendlyKing Square
-	enemyKing    Square
-	isFlipped    bool
+	whites  Bitboard
+	blacks  Bitboard
+	pawns   Bitboard
+	knights Bitboard
+	bishops Bitboard
+	rooks   Bitboard
+	queens  Bitboard
+	kings   Bitboard
 }
 
-func (b *Board) Allies() Bitboard {
-	return b.allies
+func (b *Board) Whites() Bitboard {
+	return b.whites
 }
 
-func (b *Board) Enemies() Bitboard {
-	return b.enemies
+func (b *Board) Blacks() Bitboard {
+	return b.blacks
 }
 
 func (b *Board) Pawns() Bitboard {
@@ -29,21 +28,36 @@ func (b *Board) Knights() Bitboard {
 }
 
 func (b *Board) Bishops() Bitboard {
-	return b.ordinals &^ b.cardinals
+	return b.bishops
 }
 
 func (b *Board) Rooks() Bitboard {
-	return b.cardinals &^ b.ordinals
+	return b.rooks
 }
 
 func (b *Board) Queens() Bitboard {
-	return b.cardinals & b.ordinals
+	return b.queens
 }
 
-func (b *Board) IsFlipped() bool {
-	return b.isFlipped
-}
-
-// todo
-func (b *Board) Flip() {
+func (b *Board) Put(p Piece, s Square) {
+	switch p.Color() {
+	case White:
+		b.whites.Set(s)
+	case Black:
+		b.blacks.Set(s)
+	}
+	switch p.Role() {
+	case Pawn:
+		b.pawns.Set(s)
+	case Knight:
+		b.knights.Set(s)
+	case Bishop:
+		b.bishops.Set(s)
+	case Rook:
+		b.rooks.Set(s)
+	case Queen:
+		b.queens.Set(s)
+	case King:
+		b.kings.Set(s)
+	}
 }
