@@ -5,5 +5,6 @@ type State struct {
 	EnPassantTarget  Square
 	SideToMove       Color
 	Castling         Castling
-	PlyCount         uint32
+	PlyCount         uint64
+	MoveCount        uint64
 }

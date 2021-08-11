@@ -2,6 +2,7 @@ package chess
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -86,14 +87,99 @@ func (p *Position) setFEN(fen string) error {
 	}
 
 	// 5. Half-move clock.
-	// todo
+	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 64)
+	if err != nil {
+		return fmt.Errorf("todo %v", err)
+	}
+	p.state.PlyCount = halfMoveClock
 
 	// 6. Full-move number.
-	// todo
+	fullMoveNumber, err := strconv.ParseUint(fields[5], 10, 64)
+	if err != nil {
+		return fmt.Errorf("todo %v", err)
+	}
+	p.state.MoveCount = fullMoveNumber
 
 	return nil
 }
 
-func (p *Position) Board() Board {
-	return p.board
+func (p *Position) FEN() (string, error) {
+	var sb strings.Builder
+
+	for r := Rank8; r <= Rank8; r-- {
+		num := 0
+		for f := FileA; f <= FileH; f++ {
+			square, err := SquareAt(f, r)
+			if err != nil {
+				return "", err
+			}
+			piece, ok := p.board.Get(square)
+			if !ok {
+				num += 1
+			} else {
+				if num != 0 {
+					sb.WriteString(strconv.Itoa(num))
+				}
+				sb.WriteString(piece.String())
+				num = 0
+			}
+		}
+		if num != 0 {
+			sb.WriteString(strconv.Itoa(num))
+		}
+		if r != Rank1 {
+			sb.WriteString("/")
+		}
+	}
+
+	sb.WriteString(" ")
+	sb.WriteString(p.state.SideToMove.String())
+	sb.WriteString(" ")
+	sb.WriteString(p.state.Castling.String())
+	sb.WriteString(" ")
+	if p.state.EnPassantAllowed {
+		sb.WriteString(p.state.EnPassantTarget.String())
+	} else {
+		sb.WriteString("-")
+	}
+	sb.WriteString(" ")
+	sb.WriteString(strconv.FormatUint(p.state.PlyCount, 10))
+	sb.WriteString(" ")
+	sb.WriteString(strconv.FormatUint(p.state.MoveCount, 10))
+	return sb.String(), nil
+}
+
+func (p *Position) Pretty() (string, error) {
+	var b strings.Builder
+
+	for r := Rank8; r <= Rank8; r-- {
+		for f := FileA; f <= FileH; f++ {
+			square, err := SquareAt(f, r)
+			if err != nil {
+				return "", err
+			}
+			piece, ok := p.board.Get(square)
+			if !ok {
+				b.WriteString(". ")
+			} else {
+				fmt.Fprintf(&b, "%s ", piece)
+			}
+		}
+		b.WriteString("\n")
+	}
+	fen, err := p.FEN()
+	if err != nil {
+		return "", err
+	}
+	fmt.Fprintf(&b, "FEN: %s", fen)
+
+	return b.String(), nil
+}
+
+func (p *Position) MaybeLegalMoves() []Move {
+	return nil // todo
+}
+
+func (p *Position) LegalMoves() []Move {
+	return nil // todo
 }

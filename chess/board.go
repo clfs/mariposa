@@ -61,3 +61,8 @@ func (b *Board) Put(p Piece, s Square) {
 		b.kings.Set(s)
 	}
 }
+
+func (b *Board) Get(s Square) (Piece, bool) {
+	// todo
+	return 0, false
+}
