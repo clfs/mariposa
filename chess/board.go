@@ -35,6 +35,33 @@ func (b *Board) Put(p Piece, s Square) {
 }
 
 func (b *Board) Get(s Square) (Piece, bool) {
-	// todo
-	return 0, false
+	var (
+		c Color
+		r Role
+	)
+	switch {
+	case b.Whites.At(s):
+		c = White
+	case b.Blacks.At(s):
+		c = Black
+	default:
+		return 0, false
+	}
+	switch {
+	case b.Pawns.At(s):
+		r = Pawn
+	case b.Knights.At(s):
+		r = Knight
+	case b.Bishops.At(s):
+		r = Bishop
+	case b.Rooks.At(s):
+		r = Rook
+	case b.Queens.At(s):
+		r = Queen
+	case b.Kings.At(s):
+		r = King
+	default:
+		return 0, false
+	}
+	return NewPiece(c, r), false
 }

@@ -22,6 +22,10 @@ const (
 	BlackKing   // k
 )
 
+func NewPiece(c Color, r Role) Piece {
+	return Piece(c.Value()<<3 | r.Value())
+}
+
 func (p Piece) Value() uint8 {
 	return uint8(p)
 }
