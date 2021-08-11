@@ -2,6 +2,8 @@ package chess
 
 import (
 	"fmt"
+	"math/rand"
+	"reflect"
 )
 
 //go:generate stringer -type=Square -linecomment=true
@@ -102,6 +104,10 @@ func (s Square) Bitboard() Bitboard {
 
 func (s Square) Equal(a Square) bool {
 	return s == a || (s.Invalid() && a.Invalid())
+}
+
+func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
+	return reflect.ValueOf(Square(rand.Intn(64)))
 }
 
 func SquareAt(f File, r Rank) (Square, error) {
