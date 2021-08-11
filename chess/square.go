@@ -100,6 +100,10 @@ func (s Square) Bitboard() Bitboard {
 	return Bitboard(1 << s.Value())
 }
 
+func (s Square) Equal(a Square) bool {
+	return s == a || (s.Invalid() && a.Invalid())
+}
+
 func SquareAt(f File, r Rank) (Square, error) {
 	if f.Invalid() || r.Invalid() {
 		return 0, fmt.Errorf("TODO")

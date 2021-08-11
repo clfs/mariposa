@@ -2,7 +2,7 @@ package chess
 
 type Bitboard uint64
 
-func New(n uint64) (b Bitboard) {
+func NewBitboard() (b Bitboard) {
 	return 0
 }
 
