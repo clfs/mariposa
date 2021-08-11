@@ -7,8 +7,8 @@ import (
 )
 
 type Position struct {
-	board Board
-	state State
+	Board Board
+	State State
 }
 
 func NewPosition(fen string) (*Position, error) {
@@ -34,7 +34,7 @@ func (p *Position) setFEN(fen string) error {
 			if err != nil {
 				return fmt.Errorf("todo %v", err)
 			}
-			p.board.Put(piece, square)
+			p.Board.Put(piece, square)
 			square++
 		case '1', '2', '3', '4', '5', '6', '7', '8':
 			square += Square(ru - '0') // todo weird typing
@@ -49,26 +49,26 @@ func (p *Position) setFEN(fen string) error {
 	// todo maybe parse color func
 	switch fields[1] {
 	case "w":
-		p.state.SideToMove = White
+		p.State.SideToMove = White
 	case "b":
-		p.state.SideToMove = Black
+		p.State.SideToMove = Black
 	default:
 		return fmt.Errorf("todo bad side to move %v", fields[1])
 	}
 
 	// 3. Castling availability.
-	p.state.Castling = 0 // this is required since position might have stale info
+	p.State.Castling = 0 // this is required since position might have stale info
 	if fields[2] != "-" {
 		for _, ru := range fields[2] {
 			switch ru {
 			case 'K':
-				p.state.Castling.Set(WhiteOO)
+				p.State.Castling.Set(WhiteOO)
 			case 'Q':
-				p.state.Castling.Set(WhiteOOO)
+				p.State.Castling.Set(WhiteOOO)
 			case 'k':
-				p.state.Castling.Set(BlackOO)
+				p.State.Castling.Set(BlackOO)
 			case 'q':
-				p.state.Castling.Set(BlackOOO)
+				p.State.Castling.Set(BlackOOO)
 			default:
 				return fmt.Errorf("todo bad castling %v", ru)
 			}
@@ -81,9 +81,9 @@ func (p *Position) setFEN(fen string) error {
 		if err != nil {
 			return fmt.Errorf("todo %v", err)
 		}
-		p.state.EnPassantTarget = square
+		p.State.EnPassantTarget = square
 	} else {
-		p.state.EnPassantAllowed = false
+		p.State.EnPassantAllowed = false
 	}
 
 	// 5. Half-move clock.
@@ -91,14 +91,14 @@ func (p *Position) setFEN(fen string) error {
 	if err != nil {
 		return fmt.Errorf("todo %v", err)
 	}
-	p.state.PlyCount = halfMoveClock
+	p.State.HalfMoveClock = halfMoveClock
 
 	// 6. Full-move number.
 	fullMoveNumber, err := strconv.ParseUint(fields[5], 10, 64)
 	if err != nil {
 		return fmt.Errorf("todo %v", err)
 	}
-	p.state.MoveCount = fullMoveNumber
+	p.State.FullMoveCount = fullMoveNumber
 
 	return nil
 }
@@ -113,7 +113,7 @@ func (p *Position) FEN() (string, error) {
 			if err != nil {
 				return "", err
 			}
-			piece, ok := p.board.Get(square)
+			piece, ok := p.Board.Get(square)
 			if !ok {
 				num += 1
 			} else {
@@ -133,19 +133,19 @@ func (p *Position) FEN() (string, error) {
 	}
 
 	sb.WriteString(" ")
-	sb.WriteString(p.state.SideToMove.String())
+	sb.WriteString(p.State.SideToMove.String())
 	sb.WriteString(" ")
-	sb.WriteString(p.state.Castling.String())
+	sb.WriteString(p.State.Castling.String())
 	sb.WriteString(" ")
-	if p.state.EnPassantAllowed {
-		sb.WriteString(p.state.EnPassantTarget.String())
+	if p.State.EnPassantAllowed {
+		sb.WriteString(p.State.EnPassantTarget.String())
 	} else {
 		sb.WriteString("-")
 	}
 	sb.WriteString(" ")
-	sb.WriteString(strconv.FormatUint(p.state.PlyCount, 10))
+	sb.WriteString(strconv.FormatUint(p.State.HalfMoveClock, 10))
 	sb.WriteString(" ")
-	sb.WriteString(strconv.FormatUint(p.state.MoveCount, 10))
+	sb.WriteString(strconv.FormatUint(p.State.FullMoveCount, 10))
 	return sb.String(), nil
 }
 
@@ -158,7 +158,7 @@ func (p *Position) Pretty() (string, error) {
 			if err != nil {
 				return "", err
 			}
-			piece, ok := p.board.Get(square)
+			piece, ok := p.Board.Get(square)
 			if !ok {
 				b.WriteString(". ")
 			} else {

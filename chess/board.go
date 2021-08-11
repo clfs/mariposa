@@ -1,64 +1,36 @@
 package chess
 
 type Board struct {
-	whites  Bitboard
-	blacks  Bitboard
-	pawns   Bitboard
-	knights Bitboard
-	bishops Bitboard
-	rooks   Bitboard
-	queens  Bitboard
-	kings   Bitboard
-}
-
-func (b *Board) Whites() Bitboard {
-	return b.whites
-}
-
-func (b *Board) Blacks() Bitboard {
-	return b.blacks
-}
-
-func (b *Board) Pawns() Bitboard {
-	return b.pawns
-}
-
-func (b *Board) Knights() Bitboard {
-	return b.knights
-}
-
-func (b *Board) Bishops() Bitboard {
-	return b.bishops
-}
-
-func (b *Board) Rooks() Bitboard {
-	return b.rooks
-}
-
-func (b *Board) Queens() Bitboard {
-	return b.queens
+	Whites  Bitboard
+	Blacks  Bitboard
+	Pawns   Bitboard
+	Knights Bitboard
+	Bishops Bitboard
+	Rooks   Bitboard
+	Queens  Bitboard
+	Kings   Bitboard
 }
 
 func (b *Board) Put(p Piece, s Square) {
 	switch p.Color() {
 	case White:
-		b.whites.Set(s)
+		b.Whites.Set(s)
 	case Black:
-		b.blacks.Set(s)
+		b.Blacks.Set(s)
 	}
 	switch p.Role() {
 	case Pawn:
-		b.pawns.Set(s)
+		b.Pawns.Set(s)
 	case Knight:
-		b.knights.Set(s)
+		b.Knights.Set(s)
 	case Bishop:
-		b.bishops.Set(s)
+		b.Bishops.Set(s)
 	case Rook:
-		b.rooks.Set(s)
+		b.Rooks.Set(s)
 	case Queen:
-		b.queens.Set(s)
+		b.Queens.Set(s)
 	case King:
-		b.kings.Set(s)
+		b.Kings.Set(s)
 	}
 }
 
