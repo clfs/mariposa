@@ -159,6 +159,14 @@ func (p *Position) FEN() (string, error) {
 	return sb.String(), nil
 }
 
+func (p *Position) String() string {
+	s, err := p.FEN()
+	if err != nil {
+		return "invalid position"
+	}
+	return s
+}
+
 func (p *Position) Pretty() (string, error) {
 	var b strings.Builder
 

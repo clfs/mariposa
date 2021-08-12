@@ -24,6 +24,13 @@ func TestStartingPosition(t *testing.T) {
 	}
 }
 
+func TestPosition_setFEN(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		fen string
+	}{}
+}
+
 func TestPosition_FENIsSymmetric(t *testing.T) {
 	t.Parallel()
 	f := func(p Position) bool {
