@@ -1,6 +1,10 @@
 package chess
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"reflect"
+)
 
 //go:generate stringer -type Piece -linecomment=true
 type Piece uint8
@@ -44,6 +48,11 @@ func (p Piece) Color() Color {
 
 func (p Piece) Role() Role {
 	return Role(p & 7)
+}
+
+func (Piece) Generate(rand *rand.Rand, size int) reflect.Value {
+	allPieces := []Piece{WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing, BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing}
+	return reflect.ValueOf(allPieces[rand.Intn(len(allPieces))])
 }
 
 func ParsePiece(s string) (Piece, error) {

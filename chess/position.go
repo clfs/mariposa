@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const StartingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 type Position struct {
 	Board Board
 	State State
@@ -14,6 +16,14 @@ type Position struct {
 func NewPosition(fen string) (*Position, error) {
 	p := new(Position)
 	if err := p.setFEN(fen); err != nil {
+		return nil, err
+	}
+	return p, nil
+}
+
+func StartingPosition() (*Position, error) {
+	p := new(Position)
+	if err := p.setFEN(StartingFEN); err != nil {
 		return nil, err
 	}
 	return p, nil

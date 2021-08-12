@@ -9,7 +9,23 @@ import (
 	. "github.com/clfs/mariposa/chess"
 )
 
-func TestPosition_SymmetricFEN(t *testing.T) {
+func TestStartingPosition(t *testing.T) {
+	t.Parallel()
+	p, err := StartingPosition()
+	if err != nil {
+		t.Errorf("StartingPosition() returned error: %v", err)
+	}
+	fen, err := p.FEN()
+	if err != nil {
+		t.Errorf("StartingPosition() to FEN returned error: %v", err)
+	}
+	if fen != StartingFEN {
+		t.Errorf("StartingPosition() had fen %s, expected %s", fen, StartingFEN)
+	}
+}
+
+func TestPosition_FENIsSymmetric(t *testing.T) {
+	t.Parallel()
 	f := func(p Position) bool {
 		fen, err := p.FEN()
 		if err != nil {

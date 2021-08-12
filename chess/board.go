@@ -63,5 +63,5 @@ func (b *Board) Get(s Square) (Piece, bool) {
 	default:
 		return 0, false
 	}
-	return NewPiece(c, r), false
+	return NewPiece(c, r), true
 }

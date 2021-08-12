@@ -1,11 +1,11 @@
 package chess
 
-//go:generate stringer -type=Color
+//go:generate stringer -type=Color -linecomment=true
 type Color uint8
 
 const (
-	White Color = iota
-	Black
+	White Color = iota // w
+	Black              // b
 )
 
 func (c Color) Value() uint8 {
