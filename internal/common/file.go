@@ -1,4 +1,4 @@
-package board
+package common
 
 //go:generate stringer -type File
 type File uint8

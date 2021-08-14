@@ -1,4 +1,4 @@
-package board
+package common
 
 //go:generate stringer -type=Rank
 type Rank uint8

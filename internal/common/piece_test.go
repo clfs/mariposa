@@ -1,9 +1,9 @@
-package board_test
+package common_test
 
 import (
 	"testing"
 
-	. "github.com/clfs/mariposa/internal/board"
+	. "github.com/clfs/mariposa/internal/common"
 )
 
 func TestPiece_Value(t *testing.T) {

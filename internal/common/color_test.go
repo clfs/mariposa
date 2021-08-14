@@ -1,10 +1,10 @@
-package board_test
+package common_test
 
 import (
 	"testing"
 	"testing/quick"
 
-	. "github.com/clfs/mariposa/internal/board"
+	. "github.com/clfs/mariposa/internal/common"
 )
 
 func TestColor_Value(t *testing.T) {
