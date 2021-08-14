@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"reflect"
-
-	"github.com/clfs/mariposa/internal/bitboard"
 )
 
 //go:generate stringer -type=Square -linecomment=true
@@ -98,10 +96,6 @@ func (s Square) File() File {
 
 func (s Square) Rank() Rank {
 	return Rank(s / 8)
-}
-
-func (s Square) Bitboard() bitboard.B {
-	return bitboard.B(1 << s.Value())
 }
 
 func (s Square) Equal(a Square) bool {
