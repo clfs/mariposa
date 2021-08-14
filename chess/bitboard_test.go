@@ -7,35 +7,6 @@ import (
 	. "github.com/clfs/mariposa/chess"
 )
 
-func TestNewBitboard(t *testing.T) {
-	t.Parallel()
-	if got := NewBitboard().Value(); got != 0 {
-		t.Errorf("NewBitboard() = %v, want 0", got)
-	}
-}
-
-func TestBitboard_Set(t *testing.T) {
-	t.Parallel()
-	f := func(b Bitboard, s Square) bool {
-		b.Set(s)
-		return b.At(s)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
-func TestBitboard_Clear(t *testing.T) {
-	t.Parallel()
-	f := func(b Bitboard, s Square) bool {
-		b.Clear(s)
-		return !b.At(s)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}
-
 func TestBitboard_Value(t *testing.T) {
 	t.Parallel()
 	f := func(n uint64) bool {
@@ -47,24 +18,41 @@ func TestBitboard_Value(t *testing.T) {
 	}
 }
 
-func TestBitboard_Invert(t *testing.T) {
+func TestBitboard_Set(t *testing.T) {
 	t.Parallel()
-	f := func(b Bitboard) bool {
-		old := b
-		b.Invert()
-		b.Invert()
-		return old == b
+	f := func(b Bitboard, s Square) bool {
+		return b.Set(s).Get(s)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestBitboard_Zero(t *testing.T) {
+func TestBitboard_Clear(t *testing.T) {
 	t.Parallel()
-	f := func(b Bitboard) bool {
-		b.Zero()
-		return b.Value() == 0
+	f := func(b Bitboard, s Square) bool {
+		return !(b.Clear(s).Get(s))
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestBitboard_Toggle(t *testing.T) {
+	t.Parallel()
+	f := func(b Bitboard, s Square) bool {
+		tmp := b.Get(s)
+		return tmp != b.Toggle(s).Get(s)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestBitboard_Reset(t *testing.T) {
+	t.Parallel()
+	f := func(b Bitboard, s Square) bool {
+		return !(b.Reset().Get(s))
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)

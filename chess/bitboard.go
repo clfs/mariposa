@@ -2,31 +2,36 @@ package chess
 
 type Bitboard uint64
 
-func NewBitboard() (b *Bitboard) {
-	x := Bitboard(0)
-	return &x
-}
-
+// Value returns the bitboard's integer value.
 func (b *Bitboard) Value() uint64 {
 	return uint64(*b)
 }
 
-func (b *Bitboard) Zero() {
-	*b = 0
+// Get returns the bit at the given square.
+func (b *Bitboard) Get(s Square) bool {
+	return (*b & (1 << s.Value())) > 0
 }
 
-func (b *Bitboard) Set(s Square) {
+// Set sets the bit for the given square and returns b.
+func (b *Bitboard) Set(s Square) *Bitboard {
 	*b |= (1 << s.Value())
+	return b
 }
 
-func (b *Bitboard) Clear(s Square) {
+// Clear clears the bit for the given square and returns b.
+func (b *Bitboard) Clear(s Square) *Bitboard {
 	*b &^= (1 << s.Value())
+	return b
 }
 
-func (b *Bitboard) At(s Square) bool {
-	return (*b & (1 << s.Value())) != 0
+// Toggle toggles the bit for the given square and returns b.
+func (b *Bitboard) Toggle(s Square) *Bitboard {
+	*b ^= (1 << s.Value())
+	return b
 }
 
-func (b *Bitboard) Invert() {
-	*b = ^*b
+// Reset sets all bits to 0 and returns b.
+func (b *Bitboard) Reset() *Bitboard {
+	*b = 0
+	return b
 }

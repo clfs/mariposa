@@ -40,25 +40,25 @@ func (b *Board) Get(s Square) (Piece, bool) {
 		r Role
 	)
 	switch {
-	case b.Whites.At(s):
+	case b.Whites.Get(s):
 		c = White
-	case b.Blacks.At(s):
+	case b.Blacks.Get(s):
 		c = Black
 	default:
 		return 0, false
 	}
 	switch {
-	case b.Pawns.At(s):
+	case b.Pawns.Get(s):
 		r = Pawn
-	case b.Knights.At(s):
+	case b.Knights.Get(s):
 		r = Knight
-	case b.Bishops.At(s):
+	case b.Bishops.Get(s):
 		r = Bishop
-	case b.Rooks.At(s):
+	case b.Rooks.Get(s):
 		r = Rook
-	case b.Queens.At(s):
+	case b.Queens.Get(s):
 		r = Queen
-	case b.Kings.At(s):
+	case b.Kings.Get(s):
 		r = King
 	default:
 		return 0, false
