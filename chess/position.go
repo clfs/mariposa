@@ -15,7 +15,7 @@ type Position struct {
 
 func NewPosition(fen string) (*Position, error) {
 	p := new(Position)
-	if err := p.setFEN(fen); err != nil {
+	if err := p.SetFEN(fen); err != nil {
 		return nil, err
 	}
 	return p, nil
@@ -23,13 +23,13 @@ func NewPosition(fen string) (*Position, error) {
 
 func StartingPosition() (*Position, error) {
 	p := new(Position)
-	if err := p.setFEN(StartingFEN); err != nil {
+	if err := p.SetFEN(StartingFEN); err != nil {
 		return nil, err
 	}
 	return p, nil
 }
 
-func (p *Position) setFEN(fen string) error {
+func (p *Position) SetFEN(fen string) error {
 	fields := strings.Fields(fen)
 	if len(fields) != 6 {
 		return fmt.Errorf("todo parsefenerror")
@@ -92,6 +92,7 @@ func (p *Position) setFEN(fen string) error {
 			return fmt.Errorf("todo %v", err)
 		}
 		p.State.EnPassantTarget = square
+		p.State.EnPassantAllowed = true
 	} else {
 		p.State.EnPassantAllowed = false
 	}
