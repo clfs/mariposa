@@ -32,7 +32,7 @@ func (c Color) FEN() string {
 	case Black:
 		return "b"
 	default:
-		return "-"
+		return ""
 	}
 }
 

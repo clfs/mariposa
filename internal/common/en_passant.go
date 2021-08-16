@@ -1,8 +1,8 @@
 package common
 
 type EnPassantRight struct {
-	target  Square
-	allowed bool
+	Target  Square
+	Allowed bool
 }
 
 func NewEnPassantRight() *EnPassantRight {
@@ -10,21 +10,25 @@ func NewEnPassantRight() *EnPassantRight {
 }
 
 func (e *EnPassantRight) FEN() string {
-	if !e.allowed {
+	if !e.Allowed {
 		return "-"
 	}
-	return e.target.FEN()
+	return e.Target.FEN()
 }
 
-func (e *EnPassantRight) Target() (Square, bool) {
-	return e.target, e.allowed
+func (e *EnPassantRight) Get() (Square, bool) {
+	return e.Target, e.Allowed
 }
 
 func (e *EnPassantRight) Set(target Square) {
-	e.target = target
-	e.allowed = true
+	e.Target = target
+	e.Allowed = true
 }
 
 func (e *EnPassantRight) Clear() {
-	e.allowed = false
+	e.Allowed = false
+}
+
+func (e *EnPassantRight) Equal(x EnPassantRight) bool {
+	return (!e.Allowed && !x.Allowed) || (e.Target == x.Target)
 }

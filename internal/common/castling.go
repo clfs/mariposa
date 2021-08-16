@@ -1,6 +1,8 @@
 package common
 
 import (
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -17,32 +19,40 @@ const (
 	BlackOOO
 )
 
-func (c *CastlingRights) Add(r CastlingRight) *CastlingRights {
+func NewCastlingRights(r ...CastlingRight) *CastlingRights {
+	c := CastlingRights(0)
+	for _, rr := range r {
+		c.Set(rr)
+	}
+	return &c
+}
+
+func (c *CastlingRights) Set(r CastlingRight) *CastlingRights {
 	*c |= CastlingRights(r)
 	return c
 }
 
-func (c *CastlingRights) Remove(r CastlingRight) *CastlingRights {
+func (c *CastlingRights) Clear(r CastlingRight) *CastlingRights {
 	*c &^= CastlingRights(r)
 	return c
 }
 
-func (c *CastlingRights) IsAllowed(r CastlingRight) bool {
+func (c *CastlingRights) Get(r CastlingRight) bool {
 	return (*c & CastlingRights(r)) != 0
 }
 
 func (c *CastlingRights) FEN() string {
 	var b strings.Builder
-	if c.IsAllowed(WhiteOO) {
+	if c.Get(WhiteOO) {
 		b.WriteString("K")
 	}
-	if c.IsAllowed(WhiteOOO) {
+	if c.Get(WhiteOOO) {
 		b.WriteString("Q")
 	}
-	if c.IsAllowed(BlackOO) {
+	if c.Get(BlackOO) {
 		b.WriteString("k")
 	}
-	if c.IsAllowed(BlackOOO) {
+	if c.Get(BlackOOO) {
 		b.WriteString("q")
 	}
 	s := b.String()
@@ -50,4 +60,13 @@ func (c *CastlingRights) FEN() string {
 		return "-"
 	}
 	return s
+}
+
+func (CastlingRight) Generate(rand *rand.Rand, size int) reflect.Value {
+	all := []CastlingRight{WhiteOO, WhiteOOO, BlackOO, BlackOOO}
+	return reflect.ValueOf(all[rand.Intn(len(all))])
+}
+
+func (CastlingRights) Generate(rand *rand.Rand, size int) reflect.Value {
+	return reflect.ValueOf(CastlingRights(rand.Intn(0b10000)))
 }

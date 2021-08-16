@@ -47,3 +47,18 @@ func TestColor_Invalid(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestColor_FEN(t *testing.T) {
+	cases := []struct {
+		in  Color
+		out string
+	}{
+		{White, "w"},
+		{Black, "b"},
+	}
+	for _, c := range cases {
+		if got := c.in.FEN(); got != c.out {
+			t.Errorf("%s.FEN() = %s, want %s", c.in, got, c.out)
+		}
+	}
+}

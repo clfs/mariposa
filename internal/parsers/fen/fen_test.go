@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 	"testing"
+	"testing/quick"
 
 	"github.com/clfs/mariposa/internal/common"
 	. "github.com/clfs/mariposa/internal/parsers/fen"
@@ -28,26 +29,6 @@ func getFENs(t *testing.T, filename string) []string {
 	return fens
 }
 
-func TestParseColor(t *testing.T) {
-	t.Parallel()
-	cases := []struct {
-		in   string
-		want common.Color
-	}{
-		{"w", common.White},
-		{"b", common.Black},
-	}
-	for _, c := range cases {
-		got, err := ParseColor(c.in)
-		if err != nil {
-			t.Errorf("ParseColor(%q) failed: %v", c.in, err)
-		}
-		if got != c.want {
-			t.Errorf("ParseColor(%q) = %v, want %v", c.in, got, c.want)
-		}
-	}
-}
-
 func TestParseColor_Invalid(t *testing.T) {
 	t.Parallel()
 	cases := []string{
@@ -68,6 +49,39 @@ func TestParseColor_Invalid(t *testing.T) {
 		if _, err := ParseColor(c); err == nil {
 			t.Errorf("ParseColor(%q) did not fail", c)
 		}
+	}
+}
+
+func TestParseColor(t *testing.T) {
+	t.Parallel()
+	f := func(c common.Color) bool {
+		got, err := ParseColor(c.FEN())
+		return err == nil && got == c
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestParseCastlingRights(t *testing.T) {
+	t.Parallel()
+	f := func(c common.CastlingRights) bool {
+		got, err := ParseCastlingRights(c.FEN())
+		return err == nil && got == c
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestParseEnPassantRight(t *testing.T) {
+	t.Parallel()
+	f := func(e common.EnPassantRight) bool {
+		got, err := ParseEnPassantRight(e.FEN())
+		return err == nil && got.Equal(e)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
 	}
 }
 
