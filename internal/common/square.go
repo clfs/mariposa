@@ -244,14 +244,3 @@ func (s Square) FEN() string {
 func SquareAt(f File, r Rank) Square {
 	return Square(r.Value()*8 + f.Value())
 }
-
-// todo move to parsers/fen
-func ParseSquare(s string) (Square, error) {
-	if len(s) != 2 {
-		return 0, fmt.Errorf("TODO")
-	}
-	f := File(s[0] - 'a')
-	r := Rank(s[1] - '1')
-	// FIXME: parse square doesn't check for validity
-	return SquareAt(f, r), nil
-}

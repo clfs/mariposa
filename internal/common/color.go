@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"math/rand"
 	"reflect"
 )
@@ -40,23 +39,4 @@ func (c Color) FEN() string {
 func (Color) Generate(rand *rand.Rand, size int) reflect.Value {
 	_ = size
 	return reflect.ValueOf(Color(rand.Intn(2)))
-}
-
-func ParseColor(s string) (Color, error) {
-	switch s {
-	case "w":
-		return White, nil
-	case "b":
-		return Black, nil
-	default:
-		return White, &ParseColorError{Color: s}
-	}
-}
-
-type ParseColorError struct {
-	Color string
-}
-
-func (e *ParseColorError) Error() string {
-	return fmt.Sprintf("invalid color: %s", e.Color)
 }

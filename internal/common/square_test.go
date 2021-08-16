@@ -105,29 +105,3 @@ func TestSquareAt(t *testing.T) {
 		}
 	}
 }
-
-func TestParseSquare(t *testing.T) {
-	t.Parallel()
-	cases := []struct {
-		s       string
-		want    Square
-		wantErr bool
-	}{
-		{"a1", A1, false},
-		{"f5", F5, false},
-		{"h8", H8, false},
-		{"a9", 0, true},
-		{"", 0, true},
-		{"a11", 0, true},
-		{"aa1", 0, true},
-	}
-	for _, c := range cases {
-		got, err := ParseSquare(c.s)
-		if (err != nil) != c.wantErr {
-			t.Errorf("ParseSquare(%v) had wrong value for error", c.s)
-		}
-		if got != c.want {
-			t.Errorf("ParseSquare(%v) = %v; want %v", c.s, got, c.want)
-		}
-	}
-}

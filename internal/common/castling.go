@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -50,34 +49,4 @@ func (c *CastlingRights) FEN() string {
 		return "-"
 	}
 	return s
-}
-
-// todo: move this to fen package
-func ParseCastlingRights(s string) (CastlingRights, error) {
-	var rights CastlingRights
-	for _, r := range s {
-		switch r {
-		case 'K':
-			rights.Add(WhiteOO)
-		case 'Q':
-			rights.Add(WhiteOOO)
-		case 'k':
-			rights.Add(BlackOO)
-		case 'q':
-			rights.Add(BlackOOO)
-		case '-':
-			return 0, nil // early exit!
-		default:
-			return 0, &ParseCastlingRightsError{Rights: s}
-		}
-	}
-	return rights, nil
-}
-
-type ParseCastlingRightsError struct {
-	Rights string
-}
-
-func (e *ParseCastlingRightsError) Error() string {
-	return fmt.Sprintf("invalid castling rights: %s", e.Rights)
 }
