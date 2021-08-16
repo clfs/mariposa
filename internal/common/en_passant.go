@@ -21,7 +21,7 @@ func (e *EnPassantRight) FEN() string {
 	if !e.allowed {
 		return "-"
 	}
-	return e.target.String()
+	return e.target.FEN()
 }
 
 func (e *EnPassantRight) Allowed() bool {

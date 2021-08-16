@@ -6,76 +6,76 @@ import (
 	"reflect"
 )
 
-//go:generate stringer -type=Square -linecomment=true
+//go:generate stringer -type=Square
 type Square uint8
 
 const NumSquares = 64
 
 const (
-	A1 Square = iota // a1
-	B1               // b1
-	C1               // c1
-	D1               // d1
-	E1               // e1
-	F1               // f1
-	G1               // g1
-	H1               // h1
-	A2               // a2
-	B2               // b2
-	C2               // c2
-	D2               // d2
-	E2               // e2
-	F2               // f2
-	G2               // g2
-	H2               // h2
-	A3               // a3
-	B3               // b3
-	C3               // c3
-	D3               // d3
-	E3               // e3
-	F3               // f3
-	G3               // g3
-	H3               // h3
-	A4               // a4
-	B4               // b4
-	C4               // c4
-	D4               // d4
-	E4               // e4
-	F4               // f4
-	G4               // g4
-	H4               // h4
-	A5               // a5
-	B5               // b5
-	C5               // c5
-	D5               // d5
-	E5               // e5
-	F5               // f5
-	G5               // g5
-	H5               // h5
-	A6               // a6
-	B6               // b6
-	C6               // c6
-	D6               // d6
-	E6               // e6
-	F6               // f6
-	G6               // g6
-	H6               // h6
-	A7               // a7
-	B7               // b7
-	C7               // c7
-	D7               // d7
-	E7               // e7
-	F7               // f7
-	G7               // g7
-	H7               // h7
-	A8               // a8
-	B8               // b8
-	C8               // c8
-	D8               // d8
-	E8               // e8
-	F8               // f8
-	G8               // g8
-	H8               // h8
+	A1 Square = iota
+	B1
+	C1
+	D1
+	E1
+	F1
+	G1
+	H1
+	A2
+	B2
+	C2
+	D2
+	E2
+	F2
+	G2
+	H2
+	A3
+	B3
+	C3
+	D3
+	E3
+	F3
+	G3
+	H3
+	A4
+	B4
+	C4
+	D4
+	E4
+	F4
+	G4
+	H4
+	A5
+	B5
+	C5
+	D5
+	E5
+	F5
+	G5
+	H5
+	A6
+	B6
+	C6
+	D6
+	E6
+	F6
+	G6
+	H6
+	A7
+	B7
+	C7
+	D7
+	E7
+	F7
+	G7
+	H7
+	A8
+	B8
+	C8
+	D8
+	E8
+	F8
+	G8
+	H8
 )
 
 func (s Square) Value() uint8 {
@@ -104,6 +104,141 @@ func (s Square) Equal(a Square) bool {
 
 func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
 	return reflect.ValueOf(Square(rand.Intn(64)))
+}
+
+func (s Square) FEN() string {
+	switch s {
+	case A1:
+		return "a1"
+	case B1:
+		return "b1"
+	case C1:
+		return "c1"
+	case D1:
+		return "d1"
+	case E1:
+		return "e1"
+	case F1:
+		return "f1"
+	case G1:
+		return "g1"
+	case H1:
+		return "h1"
+	case A2:
+		return "a2"
+	case B2:
+		return "b2"
+	case C2:
+		return "c2"
+	case D2:
+		return "d2"
+	case E2:
+		return "e2"
+	case F2:
+		return "f2"
+	case G2:
+		return "g2"
+	case H2:
+		return "h2"
+	case A3:
+		return "a3"
+	case B3:
+		return "b3"
+	case C3:
+		return "c3"
+	case D3:
+		return "d3"
+	case E3:
+		return "e3"
+	case F3:
+		return "f3"
+	case G3:
+		return "g3"
+	case H3:
+		return "h3"
+	case A4:
+		return "a4"
+	case B4:
+		return "b4"
+	case C4:
+		return "c4"
+	case D4:
+		return "d4"
+	case E4:
+		return "e4"
+	case F4:
+		return "f4"
+	case G4:
+		return "g4"
+	case H4:
+		return "h4"
+	case A5:
+		return "a5"
+	case B5:
+		return "b5"
+	case C5:
+		return "c5"
+	case D5:
+		return "d5"
+	case E5:
+		return "e5"
+	case F5:
+		return "f5"
+	case G5:
+		return "g5"
+	case H5:
+		return "h5"
+	case A6:
+		return "a6"
+	case B6:
+		return "b6"
+	case C6:
+		return "c6"
+	case D6:
+		return "d6"
+	case E6:
+		return "e6"
+	case F6:
+		return "f6"
+	case G6:
+		return "g6"
+	case H6:
+		return "h6"
+	case A7:
+		return "a7"
+	case B7:
+		return "b7"
+	case C7:
+		return "c7"
+	case D7:
+		return "d7"
+	case E7:
+		return "e7"
+	case F7:
+		return "f7"
+	case G7:
+		return "g7"
+	case H7:
+		return "h7"
+	case A8:
+		return "a8"
+	case B8:
+		return "b8"
+	case C8:
+		return "c8"
+	case D8:
+		return "d8"
+	case E8:
+		return "e8"
+	case F8:
+		return "f8"
+	case G8:
+		return "g8"
+	case H8:
+		return "h8"
+	default:
+		panic(fmt.Sprintf("invalid square %s cannot be represented in FEN format", s))
+	}
 }
 
 func SquareAt(f File, r Rank) Square {
