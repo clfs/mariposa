@@ -106,18 +106,17 @@ func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
 	return reflect.ValueOf(Square(rand.Intn(64)))
 }
 
-func SquareAt(f File, r Rank) (Square, error) {
-	if f.Invalid() || r.Invalid() {
-		return 0, fmt.Errorf("TODO")
-	}
-	return Square(r.Value()*8 + f.Value()), nil
+func SquareAt(f File, r Rank) Square {
+	return Square(r.Value()*8 + f.Value())
 }
 
+// todo move to parsers/fen
 func ParseSquare(s string) (Square, error) {
 	if len(s) != 2 {
 		return 0, fmt.Errorf("TODO")
 	}
 	f := File(s[0] - 'a')
 	r := Rank(s[1] - '1')
-	return SquareAt(f, r)
+	// FIXME: parse square doesn't check for validity
+	return SquareAt(f, r), nil
 }

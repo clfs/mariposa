@@ -12,33 +12,7 @@ import (
 // FromPosition returns the FEN for a position.
 func FromPosition(p position.Position) (string, error) {
 	var b strings.Builder
-
-	for r := common.Rank8; r <= common.Rank8; r-- {
-		skip := 0
-		for f := common.FileA; f <= common.FileH; f++ {
-			square, err := common.SquareAt(f, r)
-			if err != nil {
-				return "", err
-			}
-			piece, ok := p.Board.Get(square)
-			if !ok {
-				skip++
-				continue
-			}
-			if skip > 0 {
-				b.WriteString(strconv.Itoa(skip))
-				skip = 0
-			}
-			b.WriteString(piece.String())
-		}
-		if skip > 0 {
-			b.WriteString(strconv.Itoa(skip))
-		}
-		if r != common.Rank1 {
-			b.WriteString("/")
-		}
-	}
-
+	fmt.Fprintf(&b, "%s", p.Board.FEN())
 	fmt.Fprintf(&b, " %s", p.SideToMove)
 	fmt.Fprintf(&b, " %s", p.Castling.FEN())
 	fmt.Fprintf(&b, " %s", p.EnPassant.String()) // todo: why is there a string call?

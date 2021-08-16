@@ -1,6 +1,9 @@
 package board
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/clfs/mariposa/internal/bitboard"
 	"github.com/clfs/mariposa/internal/common"
 )
@@ -14,6 +17,34 @@ type Board struct {
 	rooks   bitboard.B
 	queens  bitboard.B
 	kings   bitboard.B
+}
+
+func (b *Board) FEN() string {
+	var sb strings.Builder
+
+	for r := common.Rank8; r <= common.Rank8; r-- {
+		skip := 0
+		for f := common.FileA; f <= common.FileH; f++ {
+			piece, ok := b.Get(common.SquareAt(f, r))
+			if !ok {
+				skip++
+				continue
+			}
+			if skip > 0 {
+				fmt.Fprintf(&sb, "%d", skip)
+				skip = 0
+			}
+			fmt.Fprintf(&sb, "%s", piece)
+		}
+		if skip > 0 {
+			fmt.Fprintf(&sb, "%d", skip)
+		}
+		if r != common.Rank1 {
+			fmt.Fprintf(&sb, "/")
+		}
+	}
+
+	return sb.String()
 }
 
 // Put places p at s and returns b.

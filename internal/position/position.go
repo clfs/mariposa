@@ -17,3 +17,7 @@ type Position struct {
 func New() *Position {
 	return new(Position)
 }
+
+func (p *Position) FEN() string {
+	return "todo: not implemented"
+}

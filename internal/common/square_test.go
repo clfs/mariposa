@@ -91,23 +91,17 @@ func TestSquare_Rank(t *testing.T) {
 func TestSquareAt(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		f       File
-		r       Rank
-		want    Square
-		wantErr bool
+		f    File
+		r    Rank
+		want Square
 	}{
-		{FileA, Rank1, A1, false},
-		{FileF, Rank5, F5, false},
-		{FileH, Rank8, H8, false},
-		{File(20), Rank(20), 0, true},
+		{FileA, Rank1, A1},
+		{FileF, Rank5, F5},
+		{FileH, Rank8, H8},
 	}
 	for _, c := range cases {
-		got, err := SquareAt(c.f, c.r)
-		if (err != nil) != c.wantErr {
-			t.Errorf("SquareAt(%v, %v) had wrong value for error", c.f, c.r)
-		}
-		if got != c.want {
-			t.Errorf("SquareAt(%v, %v) = %v; want %v", c.f, c.r, got, c.want)
+		if got := SquareAt(c.f, c.r); got != c.want {
+			t.Errorf("SquareAt(%s, %s) = %v; want %v", c.f, c.r, got, c.want)
 		}
 	}
 }
