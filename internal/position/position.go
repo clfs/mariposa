@@ -1,6 +1,8 @@
 package position
 
 import (
+	"fmt"
+
 	"github.com/clfs/mariposa/internal/board"
 	"github.com/clfs/mariposa/internal/common"
 )
@@ -19,5 +21,13 @@ func New() *Position {
 }
 
 func (p *Position) FEN() string {
-	return "todo: not implemented"
+	return fmt.Sprintf(
+		"%s %s %s %s %d %d",
+		p.Board.FEN(),
+		p.SideToMove.FEN(),
+		p.Castling.FEN(),
+		p.EnPassant.FEN(),
+		p.HalfMoveClock,
+		p.FullMoveCount,
+	)
 }

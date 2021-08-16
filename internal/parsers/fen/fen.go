@@ -9,20 +9,7 @@ import (
 	"github.com/clfs/mariposa/internal/position"
 )
 
-// FromPosition returns the FEN for a position.
-func FromPosition(p position.Position) (string, error) {
-	var b strings.Builder
-	fmt.Fprintf(&b, "%s", p.Board.FEN())
-	fmt.Fprintf(&b, " %s", p.SideToMove)
-	fmt.Fprintf(&b, " %s", p.Castling.FEN())
-	fmt.Fprintf(&b, " %s", p.EnPassant.String()) // todo: why is there a string call?
-	fmt.Fprintf(&b, " %d", p.HalfMoveClock)
-	fmt.Fprintf(&b, " %d", p.FullMoveCount)
-	return b.String(), nil
-}
-
-// ToPosition returns the position for a FEN.
-func ToPosition(fen string) (*position.Position, error) {
+func Parse(fen string) (*position.Position, error) {
 	p := position.New()
 
 	fields := strings.Fields(fen)

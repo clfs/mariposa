@@ -17,7 +17,7 @@ func ParseEnPassantRight(s string) (EnPassantRight, error) {
 	return EnPassantRight{target: square}, nil
 }
 
-func (e *EnPassantRight) String() string {
+func (e *EnPassantRight) FEN() string {
 	if !e.allowed {
 		return "-"
 	}

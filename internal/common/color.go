@@ -8,10 +8,10 @@ import (
 
 type Color uint8
 
-//go:generate stringer -type=Color -linecomment=true
+//go:generate stringer -type=Color
 const (
-	White Color = iota // w
-	Black              // b
+	White Color = iota
+	Black
 )
 
 func (c Color) Value() uint8 {
@@ -24,6 +24,17 @@ func (c Color) Valid() bool {
 
 func (c Color) Invalid() bool {
 	return !c.Valid()
+}
+
+func (c Color) FEN() string {
+	switch c {
+	case White:
+		return "w"
+	case Black:
+		return "b"
+	default:
+		return "-"
+	}
 }
 
 func (Color) Generate(rand *rand.Rand, size int) reflect.Value {
