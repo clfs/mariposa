@@ -23,13 +23,13 @@ func _() {
 }
 
 const (
-	_Piece_name_0 = "PNBRQK"
-	_Piece_name_1 = "pnbrqk"
+	_Piece_name_0 = "WhitePawnWhiteKnightWhiteBishopWhiteRookWhiteQueenWhiteKing"
+	_Piece_name_1 = "BlackPawnBlackKnightBlackBishopBlackRookBlackQueenBlackKing"
 )
 
 var (
-	_Piece_index_0 = [...]uint8{0, 1, 2, 3, 4, 5, 6}
-	_Piece_index_1 = [...]uint8{0, 1, 2, 3, 4, 5, 6}
+	_Piece_index_0 = [...]uint8{0, 9, 20, 31, 40, 50, 59}
+	_Piece_index_1 = [...]uint8{0, 9, 20, 31, 40, 50, 59}
 )
 
 func (i Piece) String() string {

@@ -69,7 +69,7 @@ func ParseBoard(s string) (*board.Board, error) {
 	for _, r := range s {
 		switch r {
 		case 'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k':
-			piece, err := common.ParsePiece(string(r))
+			piece, err := ParsePiece(string(r))
 			if err != nil {
 				return nil, fmt.Errorf("invalid board: %s", s)
 			}
@@ -108,6 +108,37 @@ func ParseSquare(s string) (common.Square, error) {
 		return 0, fmt.Errorf("invalid square: %s", s)
 	}
 	return sq, nil
+}
+
+func ParsePiece(s string) (common.Piece, error) {
+	switch s {
+	case "P":
+		return common.WhitePawn, nil
+	case "p":
+		return common.BlackPawn, nil
+	case "N":
+		return common.WhiteKnight, nil
+	case "n":
+		return common.BlackKnight, nil
+	case "B":
+		return common.WhiteBishop, nil
+	case "b":
+		return common.BlackBishop, nil
+	case "R":
+		return common.WhiteRook, nil
+	case "r":
+		return common.BlackRook, nil
+	case "Q":
+		return common.WhiteQueen, nil
+	case "q":
+		return common.BlackQueen, nil
+	case "K":
+		return common.WhiteKing, nil
+	case "k":
+		return common.BlackKing, nil
+	default:
+		return 0, fmt.Errorf("invalid piece: %s", s)
+	}
 }
 
 func ParseCastlingRights(s string) (common.CastlingRights, error) {

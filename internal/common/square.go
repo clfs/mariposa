@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"math/rand"
 	"reflect"
 )
@@ -237,7 +236,7 @@ func (s Square) FEN() string {
 	case H8:
 		return "h8"
 	default:
-		panic(fmt.Sprintf("invalid square %s cannot be represented in FEN format", s))
+		return ""
 	}
 }
 

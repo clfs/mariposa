@@ -9,6 +9,7 @@ type (
 	CastlingRight  uint8
 )
 
+//go:generate stringer -type=CastlingRight
 const (
 	WhiteOO CastlingRight = 1 << iota
 	WhiteOOO
@@ -33,7 +34,7 @@ func (c *CastlingRights) IsAllowed(r CastlingRight) bool {
 func (c *CastlingRights) FEN() string {
 	var b strings.Builder
 	if c.IsAllowed(WhiteOO) {
-		b.WriteString("K") // todo: use stringer for these
+		b.WriteString("K")
 	}
 	if c.IsAllowed(WhiteOOO) {
 		b.WriteString("Q")
