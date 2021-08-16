@@ -64,7 +64,7 @@ func Parse(fen string) (*position.Position, error) {
 }
 
 func ParseBoard(s string) (*board.Board, error) {
-	var b *board.Board
+	var b = new(board.Board)
 	square := common.A8
 	for _, r := range s {
 		switch r {
