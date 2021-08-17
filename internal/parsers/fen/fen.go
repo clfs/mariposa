@@ -10,6 +10,9 @@ import (
 	"github.com/clfs/mariposa/internal/position"
 )
 
+// Starting is the FEN for a starting position.
+const Starting = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 func Parse(fen string) (*position.Position, error) {
 	p := position.New()
 
