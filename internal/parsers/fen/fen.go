@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/clfs/mariposa/internal/board"
 	"github.com/clfs/mariposa/internal/common"
 	"github.com/clfs/mariposa/internal/position"
 )
@@ -66,8 +65,8 @@ func Parse(fen string) (*position.Position, error) {
 	return p, nil
 }
 
-func ParseBoard(s string) (*board.Board, error) {
-	var b = new(board.Board)
+func ParseBoard(s string) (*position.Board, error) {
+	var b = new(position.Board)
 	square := common.A8
 	for _, r := range s {
 		switch r {

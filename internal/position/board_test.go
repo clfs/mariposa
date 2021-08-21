@@ -1,11 +1,11 @@
-package board_test
+package position_test
 
 import (
 	"testing"
 	"testing/quick"
 
-	. "github.com/clfs/mariposa/internal/board"
 	"github.com/clfs/mariposa/internal/common"
+	. "github.com/clfs/mariposa/internal/position"
 )
 
 func TestBoard_PutThenGet(t *testing.T) {

@@ -3,12 +3,11 @@ package position
 import (
 	"fmt"
 
-	"github.com/clfs/mariposa/internal/board"
 	"github.com/clfs/mariposa/internal/common"
 )
 
 type Position struct {
-	Board         board.Board
+	Board         Board
 	EnPassant     common.EnPassantRight
 	Castling      common.CastlingRights
 	SideToMove    common.Color
