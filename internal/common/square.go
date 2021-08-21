@@ -97,6 +97,27 @@ func (s Square) Rank() Rank {
 	return Rank(s / 8)
 }
 
+func (s Square) IsCorner() bool {
+	return s == A1 ||
+		s == H1 ||
+		s == A8 ||
+		s == H8
+}
+
+func (s Square) IsEdge() bool {
+	return s.File() == FileA ||
+		s.File() == FileH ||
+		s.Rank() == Rank1 ||
+		s.Rank() == Rank8
+}
+
+func (s Square) Up() (Square, bool) {
+	if s.Rank() == Rank8 {
+		return 0, false
+	}
+	return SquareAt(s.File(), s.Rank()+1), true
+}
+
 func (s Square) Equal(a Square) bool {
 	return s == a || (s.Invalid() && a.Invalid())
 }
