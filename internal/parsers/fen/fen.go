@@ -148,13 +148,13 @@ func ParseCastlingRights(s string) (common.CastlingRights, error) {
 	for _, r := range s {
 		switch r {
 		case 'K':
-			cr.Set(common.WhiteOO)
+			cr.Enable(common.FriendOO)
 		case 'Q':
-			cr.Set(common.WhiteOOO)
+			cr.Enable(common.FriendOOO)
 		case 'k':
-			cr.Set(common.BlackOO)
+			cr.Enable(common.EnemyOO)
 		case 'q':
-			cr.Set(common.BlackOOO)
+			cr.Enable(common.EnemyOOO)
 		case '-':
 			return 0, nil // early exit!
 		default:
