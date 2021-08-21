@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 )
@@ -13,30 +14,33 @@ const (
 	Black
 )
 
-func (c Color) Value() uint8 {
-	return uint8(c)
+// Mirror sets c to the opposite color.
+func (c *Color) Mirror() {
+	*c = *c ^ 1
 }
 
-func (c Color) Valid() bool {
-	return c <= Black
-}
-
-func (c Color) Invalid() bool {
-	return !c.Valid()
-}
-
-func (c Color) FEN() string {
-	switch c {
+// FEN returns the FEN representation of a color. If the color is invalid, it
+// returns an empty string.
+func (c *Color) FEN() (string, error) {
+	switch *c {
 	case White:
-		return "w"
+		return "w", nil
 	case Black:
-		return "b"
+		return "b", nil
 	default:
-		return ""
+		return "", InvalidColorError{*c}
 	}
 }
 
+// Generate lets Color satisfy testing/quick.Generator.
 func (Color) Generate(rand *rand.Rand, size int) reflect.Value {
-	_ = size
 	return reflect.ValueOf(Color(rand.Intn(2)))
+}
+
+type InvalidColorError struct {
+	Color Color
+}
+
+func (e InvalidColorError) Error() string {
+	return fmt.Sprintf("invalid color: %d", e.Color)
 }

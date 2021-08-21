@@ -26,7 +26,7 @@ const (
 )
 
 func NewPiece(c Color, r Role) Piece {
-	return Piece(c.Value()<<3 | r.Value())
+	return Piece(uint8(c)<<3 | r.Value())
 }
 
 func (p Piece) Value() uint8 {

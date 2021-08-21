@@ -19,14 +19,18 @@ func New() *Position {
 	return new(Position)
 }
 
-func (p *Position) FEN() string {
+func (p *Position) FEN() (string, error) {
+	sideToMoveFEN, err := p.SideToMove.FEN()
+	if err != nil {
+		return "", err
+	}
 	return fmt.Sprintf(
 		"%s %s %s %s %d %d",
 		p.Board.FEN(),
-		p.SideToMove.FEN(),
+		sideToMoveFEN,
 		p.Castling.FEN(),
 		p.EnPassant.FEN(),
 		p.HalfMoveClock,
 		p.FullMoveCount,
-	)
+	), nil
 }
