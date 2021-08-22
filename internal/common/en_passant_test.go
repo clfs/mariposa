@@ -5,6 +5,8 @@ import (
 	"testing/quick"
 
 	. "github.com/clfs/mariposa/internal/common"
+	"github.com/clfs/mariposa/internal/parsers/fen"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestEnPassantRight_Set(t *testing.T) {
@@ -32,10 +34,34 @@ func TestEnPassantRight_Clear(t *testing.T) {
 	}
 }
 
+func TestEnPassantRight_Mirror(t *testing.T) {
+	t.Parallel()
+	f := func(e EnPassantRight) bool {
+		old := e
+		e.Mirror()
+		e.Mirror()
+		return cmp.Equal(e, old)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestEnPassantRight_NewEnPassantRightNotAllowed(t *testing.T) {
 	t.Parallel()
 	e := NewEnPassantRightNotAllowed()
 	if _, ok := e.Get(); ok {
 		t.Errorf("en passant was allowed")
+	}
+}
+
+func TestEnPassantRight_FEN(t *testing.T) {
+	t.Parallel()
+	f := func(e EnPassantRight) bool {
+		e2, err := fen.ParseEnPassantRight(e.FEN())
+		return err == nil && cmp.Equal(e, e2)
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
 	}
 }

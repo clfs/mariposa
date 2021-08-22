@@ -40,6 +40,12 @@ func (e *EnPassantRight) Clear() {
 	*e = 0
 }
 
+func (e *EnPassantRight) Mirror() {
+	s := e.square()
+	s.Mirror()
+	e.Set(s)
+}
+
 func (e *EnPassantRight) FEN() string {
 	target, allowed := e.Get()
 	if !allowed {
