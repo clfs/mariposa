@@ -6,53 +6,25 @@ import (
 	. "github.com/clfs/mariposa/internal/common"
 )
 
-func TestFile_Value(t *testing.T) {
+func TestFile_Mirror(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		f    File
-		want uint8
+		in, want File
 	}{
-		{FileA, 0},
-		{FileH, 7},
-		{File(8), 8},
+		{FileA, FileH},
+		{FileB, FileG},
+		{FileC, FileF},
+		{FileD, FileE},
+		{FileE, FileD},
+		{FileF, FileC},
+		{FileG, FileB},
+		{FileH, FileA},
 	}
 	for _, c := range cases {
-		if got := c.f.Value(); got != c.want {
-			t.Errorf("%v.Value() = %v; want %v", c.f, got, c.want)
-		}
-	}
-}
-
-func TestFile_Valid(t *testing.T) {
-	t.Parallel()
-	cases := []struct {
-		f    File
-		want bool
-	}{
-		{FileA, true},
-		{FileH, true},
-		{File(8), false},
-	}
-	for _, c := range cases {
-		if got := c.f.Valid(); got != c.want {
-			t.Errorf("%v.Valid() = %v; want %v", c.f, got, c.want)
-		}
-	}
-}
-
-func TestFile_Invalid(t *testing.T) {
-	t.Parallel()
-	cases := []struct {
-		f    File
-		want bool
-	}{
-		{FileA, false},
-		{FileH, false},
-		{File(8), true},
-	}
-	for _, c := range cases {
-		if got := c.f.Invalid(); got != c.want {
-			t.Errorf("%v.Invalid() = %v; want %v", c.f, got, c.want)
+		old := c.in
+		c.in.Mirror()
+		if got := c.in; got != c.want {
+			t.Errorf("%v.Mirror() = %v, want %v", old, got, c.want)
 		}
 	}
 }

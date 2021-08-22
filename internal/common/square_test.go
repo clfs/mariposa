@@ -124,18 +124,12 @@ func TestSquare_Mirror_Involutary(t *testing.T) {
 
 func TestSquareAt(t *testing.T) {
 	t.Parallel()
-	cases := []struct {
-		f    File
-		r    Rank
-		want Square
-	}{
-		{FileA, Rank1, A1},
-		{FileF, Rank5, F5},
-		{FileH, Rank8, H8},
+	f := func(s Square) bool {
+		file := s.File()
+		rank := s.Rank()
+		return SquareAt(file, rank) == s
 	}
-	for _, c := range cases {
-		if got := SquareAt(c.f, c.r); got != c.want {
-			t.Errorf("SquareAt(%s, %s) = %v; want %v", c.f, c.r, got, c.want)
-		}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
 	}
 }

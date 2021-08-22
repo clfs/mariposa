@@ -1,6 +1,5 @@
 package common
 
-//go:generate stringer -type File
 type File uint8
 
 const (
@@ -14,14 +13,6 @@ const (
 	FileH
 )
 
-func (f File) Value() uint8 {
-	return uint8(f)
-}
-
-func (f File) Valid() bool {
-	return f <= FileH
-}
-
-func (f File) Invalid() bool {
-	return !f.Valid()
+func (f *File) Mirror() {
+	*f = 7 - *f
 }

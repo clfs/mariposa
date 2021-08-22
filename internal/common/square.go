@@ -266,5 +266,5 @@ func (s Square) FEN() string {
 }
 
 func SquareAt(f File, r Rank) Square {
-	return Square(r.Value()*8 + f.Value())
+	return Square(r.Value()*8 + uint8(f))
 }
