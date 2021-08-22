@@ -5,7 +5,6 @@ import (
 	"reflect"
 )
 
-//go:generate stringer -type=Square
 type Square uint8
 
 const NumSquares = 64

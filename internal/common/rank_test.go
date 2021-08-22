@@ -18,7 +18,7 @@ func TestRank_Value(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Value(); got != c.want {
-			t.Errorf("%s: got %d, want %d", c.r, got, c.want)
+			t.Errorf("%v: got %d, want %d", c.r, got, c.want)
 		}
 	}
 }
@@ -35,7 +35,7 @@ func TestRank_Valid(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Valid(); got != c.want {
-			t.Errorf("%s: got %t, want %t", c.r, got, c.want)
+			t.Errorf("%v: got %t, want %t", c.r, got, c.want)
 		}
 	}
 }
@@ -52,7 +52,7 @@ func TestRank_Invalid(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Invalid(); got != c.want {
-			t.Errorf("%s: got %t, want %t", c.r, got, c.want)
+			t.Errorf("%v: got %t, want %t", c.r, got, c.want)
 		}
 	}
 }

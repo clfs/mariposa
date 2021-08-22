@@ -5,7 +5,6 @@ import (
 	"reflect"
 )
 
-//go:generate stringer -type Piece -linecomment=true
 type Piece uint8
 
 const (

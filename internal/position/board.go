@@ -34,7 +34,7 @@ func (b *Board) FEN() string {
 				fmt.Fprintf(&sb, "%d", skip)
 				skip = 0
 			}
-			fmt.Fprintf(&sb, "%s", piece)
+			fmt.Fprintf(&sb, "%s", piece.FEN())
 		}
 		if skip > 0 {
 			fmt.Fprintf(&sb, "%d", skip)

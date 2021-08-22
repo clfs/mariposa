@@ -1,6 +1,5 @@
 package common
 
-//go:generate stringer -type=Rank
 type Rank uint8
 
 // Note that Rank1 is 0.

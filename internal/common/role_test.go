@@ -17,7 +17,7 @@ func TestRole_Value(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Value(); got != c.want {
-			t.Errorf("%s.Value() = %d; want %d", c.r, got, c.want)
+			t.Errorf("%v.Value() = %d; want %d", c.r, got, c.want)
 		}
 	}
 }
@@ -34,7 +34,7 @@ func TestRole_Valid(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Valid(); got != c.want {
-			t.Errorf("%s.Valid() = %v; want %v", c.r, got, c.want)
+			t.Errorf("%v.Valid() = %v; want %v", c.r, got, c.want)
 		}
 	}
 }
@@ -51,7 +51,7 @@ func TestRole_Invalid(t *testing.T) {
 	}
 	for _, c := range cases {
 		if got := c.r.Invalid(); got != c.want {
-			t.Errorf("%s.Invalid() = %v; want %v", c.r, got, c.want)
+			t.Errorf("%v.Invalid() = %v; want %v", c.r, got, c.want)
 		}
 	}
 }
