@@ -55,11 +55,7 @@ func TestParseColor_Invalid(t *testing.T) {
 func TestParseColor(t *testing.T) {
 	t.Parallel()
 	f := func(c common.Color) bool {
-		f, err := c.FEN()
-		if err != nil {
-			return false
-		}
-		c2, err := ParseColor(f)
+		c2, err := ParseColor(c.FEN())
 		return err == nil && c2 == c
 	}
 	if err := quick.Check(f, nil); err != nil {

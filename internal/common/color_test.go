@@ -1,8 +1,6 @@
 package common_test
 
 import (
-	"errors"
-	"math"
 	"testing"
 	"testing/quick"
 
@@ -25,25 +23,10 @@ func TestColor_Mirror(t *testing.T) {
 func TestColor_FEN(t *testing.T) {
 	t.Parallel()
 	f := func(c Color) bool {
-		f, err := c.FEN()
-		if err != nil {
-			return false
-		}
-		c2, err := fen.ParseColor(f)
+		c2, err := fen.ParseColor(c.FEN())
 		return err == nil && c == c2
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
-	}
-}
-
-func TestColor_FEN_Invalid(t *testing.T) {
-	t.Parallel()
-	for i := 2; i <= math.MaxUint8; i++ {
-		c := Color(i)
-		_, err := c.FEN()
-		if !errors.As(err, &InvalidColorError{}) {
-			t.Errorf("expected InvalidColorError, got %#v", err)
-		}
 	}
 }
