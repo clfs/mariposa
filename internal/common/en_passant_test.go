@@ -34,12 +34,12 @@ func TestEnPassantRight_Clear(t *testing.T) {
 	}
 }
 
-func TestEnPassantRight_Mirror(t *testing.T) {
+func TestEnPassantRight_Flip(t *testing.T) {
 	t.Parallel()
 	f := func(e EnPassantRight) bool {
 		old := e
-		e.Mirror()
-		e.Mirror()
+		e.Flip()
+		e.Flip()
 		return cmp.Equal(e, old)
 	}
 	if err := quick.Check(f, nil); err != nil {

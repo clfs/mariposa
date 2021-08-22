@@ -40,9 +40,9 @@ func (e *EnPassantRight) Clear() {
 	*e = 0
 }
 
-func (e *EnPassantRight) Mirror() {
+func (e *EnPassantRight) Flip() {
 	s := e.square()
-	s.Mirror()
+	s.Flip()
 	e.Set(s)
 }
 

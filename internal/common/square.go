@@ -76,10 +76,6 @@ const (
 	H8
 )
 
-func (s Square) Value() uint8 {
-	return uint8(s)
-}
-
 func (s Square) Valid() bool {
 	return s <= H8
 }
@@ -110,8 +106,9 @@ func (s Square) IsEdge() bool {
 		s.Rank() == Rank8
 }
 
-func (s *Square) Mirror() {
+func (s *Square) Flip() *Square {
 	*s ^= 56
+	return s
 }
 
 func (s Square) Up() (Square, bool) {

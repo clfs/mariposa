@@ -7,24 +7,6 @@ import (
 	. "github.com/clfs/mariposa/internal/common"
 )
 
-func TestSquare_Value(t *testing.T) {
-	cases := []struct {
-		s    Square
-		want uint8
-	}{
-		{A1, 0},
-		{B1, 1},
-		{A2, 8},
-		{H8, 63},
-		{Square(100), 100},
-	}
-	for _, c := range cases {
-		if got := c.s.Value(); got != c.want {
-			t.Errorf("%v.Value() = %v; want %v", c.s, got, c.want)
-		}
-	}
-}
-
 func TestSquare_Valid(t *testing.T) {
 	cases := []struct {
 		s    Square
@@ -102,19 +84,19 @@ func TestSquare_Mirror(t *testing.T) {
 	}
 	for _, c := range cases {
 		old := c.in
-		c.in.Mirror()
+		c.in.Flip()
 		if got := c.in; got != c.want {
 			t.Errorf("%v.Mirror() = %v; want %v", old.FEN(), got, c.want)
 		}
 	}
 }
 
-func TestSquare_Mirror_Involutary(t *testing.T) {
+func TestSquare_Flip_Involutary(t *testing.T) {
 	t.Parallel()
 	f := func(s Square) bool {
 		old := s
-		s.Mirror()
-		s.Mirror()
+		s.Flip()
+		s.Flip()
 		return s == old
 	}
 	if err := quick.Check(f, nil); err != nil {
