@@ -4,17 +4,17 @@ import "github.com/clfs/mariposa/internal/bitboard"
 
 // All masks are from White's viewpoint.
 var (
-	PawnPushMasks     [64]bitboard.B
-	PawnAttackMasks   [64]bitboard.B
-	KnightAttackMasks [64]bitboard.B
-	BishopAttackMasks [64]bitboard.B
-	RookAttackMasks   [64]bitboard.B
-	QueenAttackMasks  [64]bitboard.B
-	KingAttackMasks   [64]bitboard.B
+	PawnPushMasks     [64]bitboard.Bitboard
+	PawnAttackMasks   [64]bitboard.Bitboard
+	KnightAttackMasks [64]bitboard.Bitboard
+	BishopAttackMasks [64]bitboard.Bitboard
+	RookAttackMasks   [64]bitboard.Bitboard
+	QueenAttackMasks  [64]bitboard.Bitboard
+	KingAttackMasks   [64]bitboard.Bitboard
 )
 
 func init() {
-	KnightAttackMasks = [64]bitboard.B{
+	KnightAttackMasks = [64]bitboard.Bitboard{
 		0x0000000000020400, // A1
 		0x0000000000050800, // B1
 		0x00000000000A1100, // C1
@@ -80,7 +80,7 @@ func init() {
 		0x0010A00000000000, // G8
 		0x0020400000000000, // H8
 	}
-	BishopAttackMasks = [64]bitboard.B{
+	BishopAttackMasks = [64]bitboard.Bitboard{
 		0x8040201008040200, // A1
 		0x0080402010080500, // B1
 		0x0000804020110A00, // C1

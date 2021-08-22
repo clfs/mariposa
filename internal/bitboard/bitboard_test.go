@@ -11,7 +11,7 @@ import (
 
 func TestB_Set(t *testing.T) {
 	t.Parallel()
-	f := func(b B, s common.Square) bool {
+	f := func(b Bitboard, s common.Square) bool {
 		return b.Set(s).Get(s)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -21,7 +21,7 @@ func TestB_Set(t *testing.T) {
 
 func TestB_Clear(t *testing.T) {
 	t.Parallel()
-	f := func(b B, s common.Square) bool {
+	f := func(b Bitboard, s common.Square) bool {
 		return !b.Clear(s).Get(s)
 	}
 	if err := quick.Check(f, nil); err != nil {
@@ -31,7 +31,7 @@ func TestB_Clear(t *testing.T) {
 
 func TestB_Toggle(t *testing.T) {
 	t.Parallel()
-	f := func(b B, s common.Square) bool {
+	f := func(b Bitboard, s common.Square) bool {
 		old := b.Get(s)
 		return old != b.Toggle(s).Get(s)
 	}
@@ -42,7 +42,7 @@ func TestB_Toggle(t *testing.T) {
 
 func Test8_Flip(t *testing.T) {
 	t.Parallel()
-	f := func(b B, s common.Square) bool {
+	f := func(b Bitboard, s common.Square) bool {
 		x := b.Get(s)
 		y := b.Flip().Get(*s.Flip())
 		return x == y
@@ -54,7 +54,7 @@ func Test8_Flip(t *testing.T) {
 
 func TestB_Flip_Involutary(t *testing.T) {
 	t.Parallel()
-	f := func(b B) bool {
+	f := func(b Bitboard) bool {
 		old := b
 		return old == *b.Flip().Flip()
 	}
@@ -65,7 +65,7 @@ func TestB_Flip_Involutary(t *testing.T) {
 
 func TestB_Debug(t *testing.T) {
 	t.Parallel()
-	b := B(0x1e22_2212_0e0a_1222)
+	b := Bitboard(0x1e22_2212_0e0a_1222)
 	want := `.1111...
 .1...1..
 .1...1..
@@ -80,10 +80,7 @@ func TestB_Debug(t *testing.T) {
 }
 
 func BenchmarkB_Get(b *testing.B) {
-	var (
-		bitboard = B(math.MaxUint64)
-	)
-
+	bitboard := Bitboard(math.MaxUint64)
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < 64; j++ {
 			bitboard.Get(common.Square(j))

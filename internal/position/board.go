@@ -9,14 +9,14 @@ import (
 )
 
 type Board struct {
-	whites  bitboard.B
-	blacks  bitboard.B
-	pawns   bitboard.B
-	knights bitboard.B
-	bishops bitboard.B
-	rooks   bitboard.B
-	queens  bitboard.B
-	kings   bitboard.B
+	whites  bitboard.Bitboard
+	blacks  bitboard.Bitboard
+	pawns   bitboard.Bitboard
+	knights bitboard.Bitboard
+	bishops bitboard.Bitboard
+	rooks   bitboard.Bitboard
+	queens  bitboard.Bitboard
+	kings   bitboard.Bitboard
 }
 
 func (b *Board) FEN() string {
