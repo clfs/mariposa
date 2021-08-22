@@ -1,34 +1,62 @@
 package common
 
-type EnPassantRight struct {
-	Target  Square
-	Allowed bool
+import (
+	"math/rand"
+	"reflect"
+)
+
+type EnPassantRight uint8
+
+const (
+	enPassantAllowedMask = 0b0100_0000
+	enPassantSquareMask  = 0b0011_1111
+)
+
+func NewEnPassantRight(s Square) EnPassantRight {
+	return EnPassantRight(s | enPassantAllowedMask)
 }
 
-func NewEnPassantRight() *EnPassantRight {
-	return &EnPassantRight{}
+func NewEnPassantRightNotAllowed() EnPassantRight {
+	return 0
 }
 
-func (e *EnPassantRight) FEN() string {
-	if !e.Allowed {
-		return "-"
-	}
-	return e.Target.FEN()
+func (e *EnPassantRight) Allowed() bool {
+	return *e&enPassantAllowedMask != 0
+}
+
+func (e *EnPassantRight) square() Square {
+	return Square(*e & enPassantSquareMask)
 }
 
 func (e *EnPassantRight) Get() (Square, bool) {
-	return e.Target, e.Allowed
+	return e.square(), e.Allowed()
 }
 
-func (e *EnPassantRight) Set(target Square) {
-	e.Target = target
-	e.Allowed = true
+func (e *EnPassantRight) Set(s Square) {
+	*e = EnPassantRight(s | enPassantAllowedMask)
 }
 
 func (e *EnPassantRight) Clear() {
-	e.Allowed = false
+	*e = 0
 }
 
-func (e *EnPassantRight) Equal(x EnPassantRight) bool {
-	return (!e.Allowed && !x.Allowed) || (e.Target == x.Target)
+func (e *EnPassantRight) FEN() string {
+	target, allowed := e.Get()
+	if !allowed {
+		return "-"
+	}
+	return target.FEN()
+}
+
+// Equal checks if two EnPassantRight represent equivalent en passant rights.
+func (e EnPassantRight) Equal(o EnPassantRight) bool {
+	eTarget, eAllowed := e.Get()
+	oTarget, oAllowed := o.Get()
+	return !(eAllowed || oAllowed) || (eTarget == oTarget)
+}
+
+// Generate lets EnPassantRight satisfy testing/quick.Generator.
+func (EnPassantRight) Generate(r *rand.Rand, size int) reflect.Value {
+	n := (enPassantAllowedMask | enPassantSquareMask) + 1
+	return reflect.ValueOf(EnPassantRight(rand.Intn(n)))
 }

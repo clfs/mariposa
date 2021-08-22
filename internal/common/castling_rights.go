@@ -86,11 +86,11 @@ func (c CastlingRights) Equal(o CastlingRights) bool {
 
 // Generate lets CastlingRights satisify testing/quick.Generator.
 func (CastlingRights) Generate(rand *rand.Rand, size int) reflect.Value {
-	return reflect.ValueOf(CastlingRights(rand.Intn(0b10000)))
+	return reflect.ValueOf(CastlingRights(rand.Intn(1 << 4)))
 }
 
 // Generate lets CastlingFlag satisfy testing/quick.Generator.
-func (CastlingFlag) Generate(rand *rand.Rand, size int) reflect.Value {
+func (CastlingFlag) Generate(r *rand.Rand, size int) reflect.Value {
 	all := []CastlingFlag{FriendOO, FriendOOO, EnemyOO, EnemyOOO}
-	return reflect.ValueOf(all[rand.Intn(len(all))])
+	return reflect.ValueOf(all[r.Intn(len(all))])
 }

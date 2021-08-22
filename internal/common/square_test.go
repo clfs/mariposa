@@ -2,6 +2,7 @@ package common_test
 
 import (
 	"testing"
+	"testing/quick"
 
 	. "github.com/clfs/mariposa/internal/common"
 )
@@ -85,6 +86,39 @@ func TestSquare_Rank(t *testing.T) {
 		if got := c.s.Rank(); got != c.want {
 			t.Errorf("%v.Rank() = %v; want %v", c.s, got, c.want)
 		}
+	}
+}
+
+func TestSquare_Mirror(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		in, want Square
+	}{
+		{A1, A8},
+		{H8, H1},
+		{E4, E5},
+		{F2, F7},
+		{C8, C1},
+	}
+	for _, c := range cases {
+		old := c.in
+		c.in.Mirror()
+		if got := c.in; got != c.want {
+			t.Errorf("%v.Mirror() = %v; want %v", old.FEN(), got, c.want)
+		}
+	}
+}
+
+func TestSquare_Mirror_Involutary(t *testing.T) {
+	t.Parallel()
+	f := func(s Square) bool {
+		old := s
+		s.Mirror()
+		s.Mirror()
+		return s == old
+	}
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
 	}
 }
 

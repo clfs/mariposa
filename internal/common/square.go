@@ -111,6 +111,10 @@ func (s Square) IsEdge() bool {
 		s.Rank() == Rank8
 }
 
+func (s *Square) Mirror() {
+	*s ^= 56
+}
+
 func (s Square) Up() (Square, bool) {
 	if s.Rank() == Rank8 {
 		return 0, false

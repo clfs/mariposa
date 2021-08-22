@@ -165,7 +165,7 @@ func ParseCastlingRights(s string) (common.CastlingRights, error) {
 }
 
 func ParseEnPassantRight(s string) (common.EnPassantRight, error) {
-	var e common.EnPassantRight
+	e := common.NewEnPassantRightNotAllowed()
 	if s == "-" {
 		return e, nil
 	}
