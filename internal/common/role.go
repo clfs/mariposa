@@ -1,6 +1,5 @@
 package common
 
-//go:generate stringer -type=Role
 type Role uint8
 
 const (

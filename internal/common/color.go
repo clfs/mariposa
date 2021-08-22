@@ -7,7 +7,6 @@ import (
 
 type Color uint8
 
-//go:generate stringer -type=Color
 const (
 	White Color = iota
 	Black
@@ -18,14 +17,16 @@ func (c *Color) Mirror() {
 	*c = *c ^ 1
 }
 
-// FEN returns the FEN representation of a color. If the color is invalid, it
-// returns an empty string.
+// FEN returns the FEN representation of a color. It returns an empty string if
+// the color is invalid.
 func (c *Color) FEN() string {
 	switch *c {
 	case White:
 		return "w"
-	default:
+	case Black:
 		return "b"
+	default:
+		return ""
 	}
 }
 
