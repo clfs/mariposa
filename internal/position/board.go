@@ -9,14 +9,28 @@ import (
 )
 
 type Board struct {
-	whites  bitboard.Bitboard
-	blacks  bitboard.Bitboard
-	pawns   bitboard.Bitboard
-	knights bitboard.Bitboard
-	bishops bitboard.Bitboard
-	rooks   bitboard.Bitboard
-	queens  bitboard.Bitboard
-	kings   bitboard.Bitboard
+	friends   bitboard.Bitboard
+	enemies   bitboard.Bitboard
+	pawns     bitboard.Bitboard
+	knights   bitboard.Bitboard
+	bishops   bitboard.Bitboard
+	rooks     bitboard.Bitboard
+	queens    bitboard.Bitboard
+	kings     bitboard.Bitboard
+	isFlipped bool
+}
+
+func (b *Board) Flip() {
+	b.isFlipped = !b.isFlipped
+	b.friends.Flip()
+	b.enemies.Flip()
+	b.pawns.Flip()
+	b.knights.Flip()
+	b.bishops.Flip()
+	b.rooks.Flip()
+	b.queens.Flip()
+	b.kings.Flip()
+	b.friends, b.enemies = b.enemies, b.friends
 }
 
 func (b *Board) FEN() string {
@@ -47,13 +61,13 @@ func (b *Board) FEN() string {
 	return sb.String()
 }
 
-// Put places p at s and returns b.
+// Put places p at s and returns b. This must not be used during gameplay.
 func (b *Board) Put(p common.Piece, s common.Square) *Board {
 	switch p.Color() {
 	case common.White:
-		b.whites.Set(s)
+		b.friends.Set(s)
 	case common.Black:
-		b.blacks.Set(s)
+		b.enemies.Set(s)
 	}
 	switch p.Role() {
 	case common.Pawn:
@@ -72,15 +86,16 @@ func (b *Board) Put(p common.Piece, s common.Square) *Board {
 	return b
 }
 
+// Get returns the piece at s and a boolean indicating whether one was found.
 func (b *Board) Get(s common.Square) (common.Piece, bool) {
 	var (
 		c common.Color
 		r common.Role
 	)
 	switch {
-	case b.whites.Get(s):
+	case b.friends.Get(s):
 		c = common.White
-	case b.blacks.Get(s):
+	case b.enemies.Get(s):
 		c = common.Black
 	default:
 		return 0, false

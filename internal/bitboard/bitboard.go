@@ -7,10 +7,11 @@ import (
 	"github.com/clfs/mariposa/internal/common"
 )
 
-// Bitboard is a 64-bit bitboard.
+// Bitboard is a 64-bit bitboard. From LSB to MSB, the bitboard goes A1, A2,
+// ..., H8.
 type Bitboard uint64
 
-// Get returns the bit at s and returns b.
+// Get returns the bit at s.
 func (b *Bitboard) Get(s common.Square) bool {
 	return (*b & (1 << uint8(s))) > 0
 }
@@ -33,12 +34,14 @@ func (b *Bitboard) Toggle(s common.Square) *Bitboard {
 	return b
 }
 
-// Flip flips the bitboard vertically and returns b. For example, A1 becomes A8.
+// Flip flips the bitboard vertically and returns b.
 func (b *Bitboard) Flip() *Bitboard {
 	*b = Bitboard(bits.ReverseBytes64(uint64(*b)))
 	return b
 }
 
+// Debug returns a multi-line debug string representing the bitboard. True is 1,
+// and false is ".".
 func (b *Bitboard) Debug() string {
 	var sb strings.Builder
 	for r := 7; r >= 0; r-- {
