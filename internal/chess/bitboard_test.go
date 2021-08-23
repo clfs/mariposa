@@ -8,7 +8,7 @@ import (
 	. "github.com/clfs/mariposa/internal/chess"
 )
 
-func TestB_Set(t *testing.T) {
+func TestBitboard_Set(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
 		return b.Set(s).Get(s)
@@ -18,7 +18,7 @@ func TestB_Set(t *testing.T) {
 	}
 }
 
-func TestB_Clear(t *testing.T) {
+func TestBitboard_Clear(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
 		return !b.Clear(s).Get(s)
@@ -28,7 +28,7 @@ func TestB_Clear(t *testing.T) {
 	}
 }
 
-func TestB_Toggle(t *testing.T) {
+func TestBitboard_Toggle(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
 		old := b.Get(s)
@@ -39,7 +39,7 @@ func TestB_Toggle(t *testing.T) {
 	}
 }
 
-func Test8_Flip(t *testing.T) {
+func TestBitboard_Flip(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
 		x := b.Get(s)
@@ -51,7 +51,7 @@ func Test8_Flip(t *testing.T) {
 	}
 }
 
-func TestB_Flip_Involutary(t *testing.T) {
+func TestBitboard_Flip_Involutary(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard) bool {
 		old := b
@@ -62,7 +62,7 @@ func TestB_Flip_Involutary(t *testing.T) {
 	}
 }
 
-func TestB_Debug(t *testing.T) {
+func TestBitboard_Debug(t *testing.T) {
 	t.Parallel()
 	b := Bitboard(0x1e22_2212_0e0a_1222)
 	want := `.1111...
@@ -78,11 +78,47 @@ func TestB_Debug(t *testing.T) {
 	}
 }
 
-func BenchmarkB_Get(b *testing.B) {
+func BenchmarkBitboard_Get(b *testing.B) {
 	bitboard := Bitboard(math.MaxUint64)
 	for i := 0; i < b.N; i++ {
 		for j := 0; j < 64; j++ {
-			bitboard.Get(Square(j))
+			bitboard.Get(Square(i))
+		}
+	}
+}
+
+func BenchmarkBitboard_Set(b *testing.B) {
+	bitboard := BitboardAllZero
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 64; j++ {
+			bitboard.Set(Square(i))
+		}
+	}
+}
+
+func BenchmarkBitboard_Clear(b *testing.B) {
+	bitboard := BitboardAllOne
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 64; j++ {
+			bitboard.Clear(Square(i))
+		}
+	}
+}
+
+func BenchmarkBitboard_Toggle(b *testing.B) {
+	bitboard := BitboardAllZero
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 64; j++ {
+			bitboard.Toggle(Square(i))
+		}
+	}
+}
+
+func BenchmarkBitboard_Flip(b *testing.B) {
+	bitboard := BitboardAllOne
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 100; j++ {
+			bitboard.Flip()
 		}
 	}
 }

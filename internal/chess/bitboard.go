@@ -9,6 +9,13 @@ import (
 // ..., H8.
 type Bitboard uint64
 
+const (
+	// BitboardAllOne is a bitboard with all bits set to 1.
+	BitboardAllOne Bitboard = 0xffffffffffffffff
+	// BitboardAllZero is a bitboard with all bits set to 0.
+	BitboardAllZero Bitboard = 0
+)
+
 // Get returns the bit at s.
 func (b *Bitboard) Get(s Square) bool {
 	return (*b & (1 << uint8(s))) > 0
