@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+const StartingBoardFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+
 type Board struct {
 	friends   Bitboard
 	enemies   Bitboard
