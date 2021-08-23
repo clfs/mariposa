@@ -76,12 +76,8 @@ const (
 	H8
 )
 
-func (s Square) Valid() bool {
-	return s <= H8
-}
-
-func (s Square) Invalid() bool {
-	return !s.Valid()
+func SquareFromCoordinates(f File, r Rank) Square {
+	return Square(r.Value()*8 + uint8(f))
 }
 
 func (s Square) File() File {
@@ -109,17 +105,6 @@ func (s Square) IsEdge() bool {
 func (s *Square) Flip() *Square {
 	*s ^= 56
 	return s
-}
-
-func (s Square) Up() (Square, bool) {
-	if s.Rank() == Rank8 {
-		return 0, false
-	}
-	return SquareAt(s.File(), s.Rank()+1), true
-}
-
-func (s Square) Equal(a Square) bool {
-	return s == a || (s.Invalid() && a.Invalid())
 }
 
 func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
@@ -259,8 +244,4 @@ func (s Square) FEN() string {
 	default:
 		return ""
 	}
-}
-
-func SquareAt(f File, r Rank) Square {
-	return Square(r.Value()*8 + uint8(f))
 }

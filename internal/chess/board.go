@@ -36,7 +36,7 @@ func (b *Board) FEN() string {
 	for r := Rank8; r <= Rank8; r-- {
 		skip := 0
 		for f := FileA; f <= FileH; f++ {
-			piece, ok := b.Get(SquareAt(f, r))
+			piece, ok := b.Get(SquareFromCoordinates(f, r))
 			if !ok {
 				skip++
 				continue

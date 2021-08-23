@@ -102,10 +102,8 @@ func ParseSquare(s string) (Square, error) {
 	}
 	f := File(s[0] - 'a')
 	r := Rank(s[1] - '1')
-	sq := SquareAt(f, r)
-	if sq.Invalid() {
-		return 0, fmt.Errorf("invalid square: %s", s)
-	}
+	sq := SquareFromCoordinates(f, r)
+	// TODO: validate square
 	return sq, nil
 }
 

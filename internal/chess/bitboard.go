@@ -53,7 +53,7 @@ func (b *Bitboard) Debug() string {
 		for f := 0; f < 8; f++ {
 			file := File(f)
 			rank := Rank(r)
-			square := SquareAt(file, rank)
+			square := SquareFromCoordinates(file, rank)
 			if b.Get(square) {
 				sb.WriteString("1")
 			} else {

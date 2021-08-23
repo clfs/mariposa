@@ -7,38 +7,6 @@ import (
 	. "github.com/clfs/mariposa/internal/chess"
 )
 
-func TestSquare_Valid(t *testing.T) {
-	cases := []struct {
-		s    Square
-		want bool
-	}{
-		{A1, true},
-		{H8, true},
-		{Square(100), false},
-	}
-	for _, c := range cases {
-		if got := c.s.Valid(); got != c.want {
-			t.Errorf("%v.Valid() = %t; want %t", c.s, got, c.want)
-		}
-	}
-}
-
-func TestSquare_Invalid(t *testing.T) {
-	cases := []struct {
-		s    Square
-		want bool
-	}{
-		{A1, false},
-		{H8, false},
-		{Square(100), true},
-	}
-	for _, c := range cases {
-		if got := c.s.Invalid(); got != c.want {
-			t.Errorf("%v.Invalid() = %t; want %t", c.s, got, c.want)
-		}
-	}
-}
-
 func TestSquare_File(t *testing.T) {
 	cases := []struct {
 		s    Square
@@ -104,12 +72,12 @@ func TestSquare_Flip_Involutary(t *testing.T) {
 	}
 }
 
-func TestSquareAt(t *testing.T) {
+func TestSquareFromCoordinates(t *testing.T) {
 	t.Parallel()
 	f := func(s Square) bool {
 		file := s.File()
 		rank := s.Rank()
-		return SquareAt(file, rank) == s
+		return SquareFromCoordinates(file, rank) == s
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
