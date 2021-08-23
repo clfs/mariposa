@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// Position represents a chess position.
 type Position struct {
 	Board         Board
 	EnPassant     EnPassantRight
@@ -13,8 +14,11 @@ type Position struct {
 	FullMoveCount uint16 // Max full move count is ~4000 (?).
 }
 
-func New() *Position {
-	return new(Position)
+// NewPosition returns a new position set to the given FEN.
+func NewPosition(fen string) (*Position, error) {
+	p := new(Position)
+	err := p.setFromFEN(fen)
+	return p, err
 }
 
 func (p *Position) FEN() (string, error) {
@@ -27,4 +31,9 @@ func (p *Position) FEN() (string, error) {
 		p.HalfMoveClock,
 		p.FullMoveCount,
 	), nil
+}
+
+func (p *Position) setFromFEN(fen string) error {
+	// TODO: implement.
+	return nil
 }

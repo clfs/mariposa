@@ -10,7 +10,10 @@ import (
 const Starting = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 func Parse(fen string) (*Position, error) {
-	p := New()
+	p, err := NewPosition(fen)
+	if err != nil {
+		return nil, err
+	}
 
 	fields := strings.Fields(fen)
 	if len(fields) != 6 {
@@ -72,7 +75,7 @@ func ParseBoard(s string) (*Board, error) {
 			if err != nil {
 				return nil, fmt.Errorf("invalid board: %s", s)
 			}
-			b.Put(piece, square)
+			b.put(piece, square)
 		case '1', '2', '3', '4', '5', '6', '7', '8':
 			offset := r - '0'
 			square += Square(offset)

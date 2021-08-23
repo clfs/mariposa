@@ -45,8 +45,8 @@ func (b *Bitboard) Flip() *Bitboard {
 	return b
 }
 
-// Debug returns a multi-line debug string representing the bitboard. True is 1,
-// and false is ".".
+// Debug returns a multi-line debug string representing the bitboard. True is
+// "1", and false is ".".
 func (b *Bitboard) Debug() string {
 	var sb strings.Builder
 	for r := 7; r >= 0; r-- {

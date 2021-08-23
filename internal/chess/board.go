@@ -17,6 +17,7 @@ type Board struct {
 	isFlipped bool
 }
 
+// Flip flips the board vertically.
 func (b *Board) Flip() {
 	b.isFlipped = !b.isFlipped
 	b.friends.Flip()
@@ -30,13 +31,14 @@ func (b *Board) Flip() {
 	b.friends, b.enemies = b.enemies, b.friends
 }
 
+// FEN returns the FEN representation of the board.
 func (b *Board) FEN() string {
 	var sb strings.Builder
 
 	for r := Rank8; r <= Rank8; r-- {
 		skip := 0
 		for f := FileA; f <= FileH; f++ {
-			piece, ok := b.Get(SquareFromCoordinates(f, r))
+			piece, ok := b.get(SquareFromCoordinates(f, r))
 			if !ok {
 				skip++
 				continue
@@ -58,8 +60,7 @@ func (b *Board) FEN() string {
 	return sb.String()
 }
 
-// Put places p at s and returns b. This must not be used during gameplay.
-func (b *Board) Put(p Piece, s Square) *Board {
+func (b *Board) put(p Piece, s Square) *Board {
 	switch p.Color() {
 	case White:
 		b.friends.Set(s)
@@ -83,8 +84,7 @@ func (b *Board) Put(p Piece, s Square) *Board {
 	return b
 }
 
-// Get returns the piece at s and a boolean indicating whether one was found.
-func (b *Board) Get(s Square) (Piece, bool) {
+func (b *Board) get(s Square) (Piece, bool) {
 	var (
 		c Color
 		r Role
