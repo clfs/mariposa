@@ -1,6 +1,7 @@
 package chess
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 )
@@ -78,6 +79,17 @@ const (
 
 func SquareFromCoordinates(f File, r Rank) Square {
 	return Square(r.Value()*8 + uint8(f))
+}
+
+func ParseSquareFEN(s string) (Square, error) {
+	if len(s) != 2 {
+		return 0, fmt.Errorf("invalid square: %s", s)
+	}
+	f := File(s[0] - 'a')
+	r := Rank(s[1] - '1')
+	sq := SquareFromCoordinates(f, r)
+	// TODO: validate square
+	return sq, nil
 }
 
 func (s Square) File() File {

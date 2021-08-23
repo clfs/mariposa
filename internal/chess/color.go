@@ -1,10 +1,12 @@
 package chess
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 )
 
+// Color represents a color - either white or black.
 type Color uint8
 
 const (
@@ -12,8 +14,19 @@ const (
 	Black
 )
 
-// Mirror sets c to the opposite color.
-func (c *Color) Mirror() {
+func ParseColorFEN(s string) (Color, error) {
+	switch s {
+	case "w":
+		return White, nil
+	case "b":
+		return Black, nil
+	default:
+		return 0, fmt.Errorf("invalid color %s", s)
+	}
+}
+
+// Flip sets c to the opposite color.
+func (c *Color) Flip() {
 	*c = *c ^ 1
 }
 

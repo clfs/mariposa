@@ -59,14 +59,3 @@ func TestCastlingRights_Mirror(t *testing.T) {
 		t.Error(err)
 	}
 }
-
-func TestCastlingRights_FEN(t *testing.T) {
-	t.Parallel()
-	f := func(c CastlingRights) bool {
-		c2, err := ParseCastlingRights(c.FEN())
-		return err == nil && cmp.Equal(c, c2)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
-	}
-}

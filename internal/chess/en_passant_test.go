@@ -46,21 +46,10 @@ func TestEnPassantRight_Flip(t *testing.T) {
 	}
 }
 
-func TestEnPassantRight_NewEnPassantRightNotAllowed(t *testing.T) {
+func TestEnPassantRight_NewEnPassantRightNone(t *testing.T) {
 	t.Parallel()
-	e := NewEnPassantRightNotAllowed()
+	e := NewEnPassantRightNone()
 	if _, ok := e.Get(); ok {
 		t.Errorf("en passant was allowed")
-	}
-}
-
-func TestEnPassantRight_FEN(t *testing.T) {
-	t.Parallel()
-	f := func(e EnPassantRight) bool {
-		e2, err := ParseEnPassantRight(e.FEN())
-		return err == nil && cmp.Equal(e, e2)
-	}
-	if err := quick.Check(f, nil); err != nil {
-		t.Error(err)
 	}
 }

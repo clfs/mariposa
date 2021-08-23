@@ -17,6 +17,32 @@ type Board struct {
 	isFlipped bool
 }
 
+// NewBoard returns a new board with the given board-FEN representation.
+func NewBoard(boardFEN string) (*Board, error) {
+	b := new(Board)
+	err := b.setFromBoardFEN(boardFEN)
+	return b, err
+}
+
+func (b *Board) setFromBoardFEN(boardFEN string) error {
+	square := A8
+	for _, r := range boardFEN {
+		piece, err := ParsePieceFEN(string(r))
+		if err == nil {
+			b.put(piece, square)
+		}
+		switch r {
+		case '1', '2', '3', '4', '5', '6', '7', '8':
+			square += Square(r - '0')
+		case '/':
+			square -= 16
+		default:
+			return fmt.Errorf("invalid board: %s", boardFEN)
+		}
+	}
+	return nil
+}
+
 // Flip flips the board vertically.
 func (b *Board) Flip() {
 	b.isFlipped = !b.isFlipped

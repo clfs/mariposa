@@ -16,8 +16,16 @@ func NewEnPassantRight(s Square) EnPassantRight {
 	return EnPassantRight(s | enPassantAllowedMask)
 }
 
-func NewEnPassantRightNotAllowed() EnPassantRight {
+func NewEnPassantRightNone() EnPassantRight {
 	return 0
+}
+
+func ParseEnPassantRightFEN(s string) (EnPassantRight, error) {
+	target, err := ParseSquareFEN(s)
+	if err != nil {
+		return 0, err
+	}
+	return NewEnPassantRight(target), nil
 }
 
 func (e *EnPassantRight) Allowed() bool {

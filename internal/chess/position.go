@@ -2,7 +2,12 @@ package chess
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 )
+
+// StartingPositionFEN is the FEN for the starting position.
+const StartingPositionFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 // Position represents a chess position.
 type Position struct {
@@ -34,6 +39,44 @@ func (p *Position) FEN() (string, error) {
 }
 
 func (p *Position) setFromFEN(fen string) error {
-	// TODO: implement.
+	fields := strings.Fields(fen)
+	if len(fields) != 6 {
+		return fmt.Errorf("invalid FEN %s", fen)
+	}
+
+	if err := p.Board.setFromBoardFEN(fields[0]); err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+
+	color, err := ParseColorFEN(fields[1])
+	if err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+	p.SideToMove = color
+
+	castlingRights, err := ParseCastlingRightsFEN(fields[2])
+	if err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+	p.Castling = castlingRights
+
+	enPassantRight, err := ParseEnPassantRightFEN(fields[3])
+	if err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+	p.EnPassant = enPassantRight
+
+	halfMoveClock, err := strconv.ParseUint(fields[4], 10, 8)
+	if err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+	p.HalfMoveClock = uint8(halfMoveClock)
+
+	fullMoveCount, err := strconv.ParseUint(fields[5], 10, 16)
+	if err != nil {
+		return fmt.Errorf("invalid FEN %s: %v", fen, err)
+	}
+	p.FullMoveCount = uint16(fullMoveCount)
+
 	return nil
 }

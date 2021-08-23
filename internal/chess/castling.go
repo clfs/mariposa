@@ -1,6 +1,7 @@
 package chess
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 	"strings"
@@ -32,6 +33,27 @@ func NewCastlingRights(flags ...CastlingFlag) CastlingRights {
 		n.Enable(f)
 	}
 	return CastlingRights(n)
+}
+
+func ParseCastlingRightsFEN(s string) (CastlingRights, error) {
+	var flags []CastlingFlag
+	for _, r := range s {
+		switch r {
+		case 'K':
+			flags = append(flags, FriendOO)
+		case 'Q':
+			flags = append(flags, FriendOOO)
+		case 'k':
+			flags = append(flags, EnemyOO)
+		case 'q':
+			flags = append(flags, EnemyOOO)
+		case '-':
+			continue
+		default:
+			return 0, fmt.Errorf("invalid castling rights %s", s)
+		}
+	}
+	return NewCastlingRights(flags...), nil
 }
 
 // Enable sets the provided castling right to true.
