@@ -32,8 +32,8 @@ func (c Color) Flipped() Color {
 
 // FEN returns the FEN representation of a color. It returns an empty string if
 // the color is invalid.
-func (c *Color) FEN() string {
-	switch *c {
+func (c Color) FEN() string {
+	switch c {
 	case White:
 		return "w"
 	case Black:
