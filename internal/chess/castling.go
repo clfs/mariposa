@@ -32,54 +32,41 @@ func NewCastlingRights(flags ...CastlingFlag) CastlingRights {
 	for _, f := range flags {
 		n.Enable(f)
 	}
-	return CastlingRights(n)
+	return n
 }
 
-func ParseCastlingRightsFEN(s string) (CastlingRights, error) {
-	var flags []CastlingFlag
-	for _, r := range s {
-		switch r {
-		case 'K':
-			flags = append(flags, FriendOO)
-		case 'Q':
-			flags = append(flags, FriendOOO)
-		case 'k':
-			flags = append(flags, EnemyOO)
-		case 'q':
-			flags = append(flags, EnemyOOO)
-		case '-':
-			continue
-		default:
-			return 0, fmt.Errorf("invalid castling rights %s", s)
-		}
-	}
-	return NewCastlingRights(flags...), nil
-}
-
-// Enable sets the provided castling right to true.
-func (c *CastlingRights) Enable(f CastlingFlag) {
-	*c |= CastlingRights(f)
-}
-
-// Disable sets the provided castling right to false.
-func (c *CastlingRights) Disable(f CastlingFlag) {
-	*c &^= CastlingRights(f)
-}
-
-// Get returns whether the provided castling right is available.
+// Get returns whether a castling right is available.
 func (c *CastlingRights) Get(f CastlingFlag) bool {
 	return (*c & CastlingRights(f)) != 0
 }
 
-// Mirror mirrors the castling rights by color. For example, the friendly
-// king-side castling right becomes the enemy king-side castling right.
-func (c *CastlingRights) Mirror() {
-	*c = (*c << 2) | (*c >> 2)
+// Enable enables a castling right.
+func (c *CastlingRights) Enable(f CastlingFlag) {
+	*c |= CastlingRights(f)
 }
 
-// FEN returns the FEN representation of the castling rights. It assumes the
-// castling rights are not mirrored. For example, the friendly king-side
-// castling right is represented by K.
+// Disable disables a castling right.
+func (c *CastlingRights) Disable(f CastlingFlag) {
+	*c &^= CastlingRights(f)
+}
+
+// Flip flips castling rights by color.
+func (c *CastlingRights) Flip() {
+	*c = ((*c << 2) | (*c >> 2)) & 0xf
+}
+
+// Generate lets CastlingRights satisify testing/quick.Generator.
+func (CastlingRights) Generate(rand *rand.Rand, size int) reflect.Value {
+	return reflect.ValueOf(CastlingRights(rand.Intn(1 << 4)))
+}
+
+// Generate lets CastlingFlag satisfy testing/quick.Generator.
+func (CastlingFlag) Generate(r *rand.Rand, size int) reflect.Value {
+	all := []CastlingFlag{FriendOO, FriendOOO, EnemyOO, EnemyOOO}
+	return reflect.ValueOf(all[r.Intn(len(all))])
+}
+
+// FEN returns the FEN representation of the castling rights.
 func (c *CastlingRights) FEN() string {
 	var b strings.Builder
 	if c.Get(FriendOO) {
@@ -101,18 +88,24 @@ func (c *CastlingRights) FEN() string {
 	return s
 }
 
-// Equal checks if two CastlingRights represent equivalent castling rights.
-func (c CastlingRights) Equal(o CastlingRights) bool {
-	return c&0xf == o&0xf
-}
-
-// Generate lets CastlingRights satisify testing/quick.Generator.
-func (CastlingRights) Generate(rand *rand.Rand, size int) reflect.Value {
-	return reflect.ValueOf(CastlingRights(rand.Intn(1 << 4)))
-}
-
-// Generate lets CastlingFlag satisfy testing/quick.Generator.
-func (CastlingFlag) Generate(r *rand.Rand, size int) reflect.Value {
-	all := []CastlingFlag{FriendOO, FriendOOO, EnemyOO, EnemyOOO}
-	return reflect.ValueOf(all[r.Intn(len(all))])
+func ParseCastlingRightsFEN(s string) (CastlingRights, error) {
+	// TODO make this more strict.
+	var flags []CastlingFlag
+	for _, r := range s {
+		switch r {
+		case 'K':
+			flags = append(flags, FriendOO)
+		case 'Q':
+			flags = append(flags, FriendOOO)
+		case 'k':
+			flags = append(flags, EnemyOO)
+		case 'q':
+			flags = append(flags, EnemyOOO)
+		case '-':
+			continue
+		default:
+			return 0, fmt.Errorf("invalid castling rights %s", s)
+		}
+	}
+	return NewCastlingRights(flags...), nil
 }

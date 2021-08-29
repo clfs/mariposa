@@ -4,8 +4,6 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/google/go-cmp/cmp"
-
 	. "github.com/clfs/mariposa/internal/chess"
 )
 
@@ -47,13 +45,13 @@ func TestCastlingRights_Disable(t *testing.T) {
 	}
 }
 
-func TestCastlingRights_Mirror(t *testing.T) {
+func TestCastlingRights_Flip(t *testing.T) {
 	t.Parallel()
 	f := func(c CastlingRights) bool {
 		old := c
-		c.Mirror()
-		c.Mirror()
-		return cmp.Equal(old, c)
+		c.Flip()
+		c.Flip()
+		return old == c
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)

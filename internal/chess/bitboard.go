@@ -9,20 +9,13 @@ import (
 // ..., H8.
 type Bitboard uint64
 
-const (
-	// BitboardAllOne is a bitboard with all bits set to 1.
-	BitboardAllOne Bitboard = 0xffffffffffffffff
-	// BitboardAllZero is a bitboard with all bits set to 0.
-	BitboardAllZero Bitboard = 0
-)
-
 // Get returns the bit at s.
 func (b *Bitboard) Get(s Square) bool {
 	return (*b & s.Bitboard()) != 0
 }
 
-// Set sets the bit at s to x and returns b. If x is known beforehand, use Set1
-// or Set0 instead.
+// Set sets the bit at s to x and also returns the bitboard. If x is known
+// beforehand, use Set1 or Set0 instead.
 func (b *Bitboard) Set(s Square, x bool) *Bitboard {
 	if x {
 		return b.Set1(s)
@@ -30,26 +23,26 @@ func (b *Bitboard) Set(s Square, x bool) *Bitboard {
 	return b.Set0(s)
 }
 
-// Set1 sets the bit at s to 1 and returns b.
+// Set1 sets the bit at s to 1 and also returns the bitboard.
 func (b *Bitboard) Set1(s Square) *Bitboard {
 	*b |= s.Bitboard()
 	return b
 }
 
-// Set0 sets the bit at s to 0 and returns b.
+// Set0 sets the bit at s to 0 and also returns the bitboard.
 func (b *Bitboard) Set0(s Square) *Bitboard {
 	*b &^= s.Bitboard()
 	return b
 }
 
-// Toggle toggles the bit at s and returns b.
+// Toggle toggles the bit at s and also returns the bitboard.
 func (b *Bitboard) Toggle(s Square) *Bitboard {
 	*b ^= s.Bitboard()
 	return b
 }
 
-// Flip vertically mirrors the bitboard and returns it. For example, the bit at
-// A1 becomes the bit at A8.
+// Flip vertically mirrors the bitboard and also returns it. For example, the
+// bit at A1 becomes the bit at A8.
 func (b *Bitboard) Flip() *Bitboard {
 	*b = Bitboard(bits.ReverseBytes64(uint64(*b)))
 	return b
