@@ -11,14 +11,7 @@ const (
 	King
 )
 
-func (r Role) Value() uint8 {
-	return uint8(r)
-}
-
+// Valid returns whether the role is valid.
 func (r Role) Valid() bool {
-	return r >= Pawn && r <= King
-}
-
-func (r Role) Invalid() bool {
-	return !r.Valid()
+	return Pawn <= r && r <= King
 }

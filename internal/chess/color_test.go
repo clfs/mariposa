@@ -6,14 +6,11 @@ import (
 	. "github.com/clfs/mariposa/internal/chess"
 )
 
-func TestColor_Flip(t *testing.T) {
-	c := White
-	c.Flip()
-	if c != Black {
-		t.Errorf("expected %v, got %v", Black, c)
+func TestColor_Flipped(t *testing.T) {
+	if got := White.Flipped(); got != Black {
+		t.Errorf("White.Flipped() should be Black, got %v", got)
 	}
-	c.Flip()
-	if c != White {
-		t.Errorf("expected %v, got %v", White, c)
+	if got := Black.Flipped(); got != White {
+		t.Errorf("Black.Flipped() should be White, got %v", got)
 	}
 }

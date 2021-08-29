@@ -14,14 +14,7 @@ const (
 	Rank8
 )
 
-func (r Rank) Value() uint8 {
-	return uint8(r)
-}
-
-func (r Rank) Valid() bool {
-	return r <= Rank8
-}
-
-func (r Rank) Invalid() bool {
-	return !r.Valid()
+// Flipped returns a rank vertically flipped from the original.
+func (r Rank) Flipped() Rank {
+	return 7 - r
 }

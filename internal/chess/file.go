@@ -12,7 +12,3 @@ const (
 	FileG
 	FileH
 )
-
-func (f *File) Mirror() {
-	*f = 7 - *f
-}

@@ -26,7 +26,7 @@ const (
 )
 
 func NewPiece(c Color, r Role) Piece {
-	return Piece(uint8(c)<<3 | r.Value())
+	return Piece(uint8(c)<<3 | uint8(r))
 }
 
 func ParsePieceFEN(s string) (Piece, error) {

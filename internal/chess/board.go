@@ -66,7 +66,7 @@ func (b *Board) FEN() string {
 	for r := Rank8; r <= Rank8; r-- {
 		skip := 0
 		for f := FileA; f <= FileH; f++ {
-			piece, ok := b.get(SquareFromCoordinates(f, r))
+			piece, ok := b.get(NewSquare(f, r))
 			if !ok {
 				skip++
 				continue
@@ -91,23 +91,23 @@ func (b *Board) FEN() string {
 func (b *Board) put(p Piece, s Square) *Board {
 	switch p.Color() {
 	case White:
-		b.friends.Set(s)
+		b.friends.Set1(s)
 	case Black:
-		b.enemies.Set(s)
+		b.enemies.Set1(s)
 	}
 	switch p.Role() {
 	case Pawn:
-		b.pawns.Set(s)
+		b.pawns.Set1(s)
 	case Knight:
-		b.knights.Set(s)
+		b.knights.Set1(s)
 	case Bishop:
-		b.bishops.Set(s)
+		b.bishops.Set1(s)
 	case Rook:
-		b.rooks.Set(s)
+		b.rooks.Set1(s)
 	case Queen:
-		b.queens.Set(s)
+		b.queens.Set1(s)
 	case King:
-		b.kings.Set(s)
+		b.kings.Set1(s)
 	}
 	return b
 }

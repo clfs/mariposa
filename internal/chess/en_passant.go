@@ -5,6 +5,7 @@ import (
 	"reflect"
 )
 
+// EnPassantRight represents the right to en passant.
 type EnPassantRight uint8
 
 const (
@@ -12,49 +13,33 @@ const (
 	enPassantSquareMask  = 0b0011_1111
 )
 
-func NewEnPassantRight(s Square) EnPassantRight {
-	return EnPassantRight(s | enPassantAllowedMask)
-}
-
-func NewEnPassantRightNone() EnPassantRight {
+// NewEnPassantRight returns a new EnPassantRight.
+func NewEnPassantRight() EnPassantRight {
 	return 0
 }
 
-func ParseEnPassantRightFEN(s string) (EnPassantRight, error) {
-	target, err := ParseSquareFEN(s)
-	if err != nil {
-		return 0, err
-	}
-	return NewEnPassantRight(target), nil
+// Allowed returns whether en passant is allowed.
+func (e EnPassantRight) Allowed() bool {
+	return e&enPassantAllowedMask != 0
 }
 
-func (e *EnPassantRight) Allowed() bool {
-	return *e&enPassantAllowedMask != 0
+func (e EnPassantRight) square() Square {
+	return Square(e & enPassantSquareMask)
 }
 
-func (e *EnPassantRight) square() Square {
-	return Square(*e & enPassantSquareMask)
-}
-
-func (e *EnPassantRight) Get() (Square, bool) {
+// Get returns the target square (if any) and whether en passant is allowed.
+func (e EnPassantRight) Get() (Square, bool) {
 	return e.square(), e.Allowed()
 }
 
-func (e *EnPassantRight) Set(s Square) {
-	*e = EnPassantRight(s | enPassantAllowedMask)
+// Flipped returns a new EnPassantRight with the target square vertically
+// flipped (if any).
+func (e EnPassantRight) Flipped() EnPassantRight {
+	return EnPassantRight(uint8(e&enPassantAllowedMask) | uint8(e.square().Flipped()))
 }
 
-func (e *EnPassantRight) Clear() {
-	*e = 0
-}
-
-func (e *EnPassantRight) Flip() {
-	s := e.square()
-	s.Flip()
-	e.Set(s)
-}
-
-func (e *EnPassantRight) FEN() string {
+// FEN returns the FEN representation of the EnPassantRight.
+func (e EnPassantRight) FEN() string {
 	target, allowed := e.Get()
 	if !allowed {
 		return "-"
@@ -63,6 +48,7 @@ func (e *EnPassantRight) FEN() string {
 }
 
 // Equal checks if two EnPassantRight represent equivalent en passant rights.
+// TODO: Benchmark and optimize this.
 func (e EnPassantRight) Equal(o EnPassantRight) bool {
 	eTarget, eAllowed := e.Get()
 	oTarget, oAllowed := o.Get()
@@ -73,4 +59,12 @@ func (e EnPassantRight) Equal(o EnPassantRight) bool {
 func (EnPassantRight) Generate(r *rand.Rand, size int) reflect.Value {
 	n := (enPassantAllowedMask | enPassantSquareMask) + 1
 	return reflect.ValueOf(EnPassantRight(rand.Intn(n)))
+}
+
+func ParseEnPassantRightFEN(s string) (EnPassantRight, error) {
+	target, err := ParseSquareFEN(s)
+	if err != nil {
+		return 0, err
+	}
+	return target.EnPassantRight(), nil
 }

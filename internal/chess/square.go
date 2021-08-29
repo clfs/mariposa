@@ -77,8 +77,9 @@ const (
 	H8
 )
 
-func SquareFromCoordinates(f File, r Rank) Square {
-	return Square(r.Value()*8 + uint8(f))
+// NewSquare returns a new square from coordinates.
+func NewSquare(f File, r Rank) Square {
+	return Square(uint8(r)*8 + uint8(f))
 }
 
 func ParseSquareFEN(s string) (Square, error) {
@@ -87,40 +88,44 @@ func ParseSquareFEN(s string) (Square, error) {
 	}
 	f := File(s[0] - 'a')
 	r := Rank(s[1] - '1')
-	sq := SquareFromCoordinates(f, r)
+	sq := NewSquare(f, r)
 	// TODO: validate square
 	return sq, nil
 }
 
+// Valid returns whether the square is valid.
+func (s Square) Valid() bool {
+	return s < NumSquares
+}
+
+// File returns the file the square is on.
 func (s Square) File() File {
 	return File(s % 8)
 }
 
+// Rank returns the rank the square is on.
 func (s Square) Rank() Rank {
 	return Rank(s / 8)
 }
 
-func (s Square) IsCorner() bool {
-	return s == A1 ||
-		s == H1 ||
-		s == A8 ||
-		s == H8
+// Flipped returns the vertically opposite square.
+func (s Square) Flipped() Square {
+	return s ^ 56
 }
 
-func (s Square) IsEdge() bool {
-	return s.File() == FileA ||
-		s.File() == FileH ||
-		s.Rank() == Rank1 ||
-		s.Rank() == Rank8
+// EnPassantRight returns an en passant right that targets the square.
+func (s Square) EnPassantRight() EnPassantRight {
+	return EnPassantRight(enPassantAllowedMask | s)
 }
 
-func (s *Square) Flip() *Square {
-	*s ^= 56
-	return s
+// Bitboard returns a bitboard with just the square set.
+func (s Square) Bitboard() Bitboard {
+	return Bitboard(1 << s)
 }
 
+// Generate lets Square satisfy testing/quick.Generator.
 func (Square) Generate(rand *rand.Rand, size int) reflect.Value {
-	return reflect.ValueOf(Square(rand.Intn(64)))
+	return reflect.ValueOf(Square(rand.Intn(NumSquares)))
 }
 
 func (s Square) FEN() string {

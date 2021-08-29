@@ -25,9 +25,9 @@ func ParseColorFEN(s string) (Color, error) {
 	}
 }
 
-// Flip sets c to the opposite color.
-func (c *Color) Flip() {
-	*c = *c ^ 1
+// Flipped returns the opposite color.
+func (c Color) Flipped() Color {
+	return c ^ 1
 }
 
 // FEN returns the FEN representation of a color. It returns an empty string if
