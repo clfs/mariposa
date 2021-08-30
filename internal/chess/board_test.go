@@ -2,23 +2,19 @@ package chess_test
 
 import (
 	"testing"
-
-	"github.com/google/go-cmp/cmp"
+	"testing/quick"
 
 	. "github.com/clfs/mariposa/internal/chess"
 )
 
 func TestBoard_Flip(t *testing.T) {
-	b, err := NewBoard(StartingBoardFEN)
-	if err != nil {
-		t.Fatal(err)
+	t.Parallel()
+	// Flipping the board twice must not change the board.
+	f := func(b Board) bool {
+		old := b
+		return old == *b.Flip().Flip()
 	}
-	b.Flip()
-	if diff := cmp.Diff(StartingBoardFEN, b.FEN()); diff != "" {
-		t.Errorf("Flip() failed (-want +got): %s", diff)
-	}
-	b.Flip()
-	if diff := cmp.Diff(StartingBoardFEN, b.FEN()); diff != "" {
-		t.Errorf("Flip() failed (-want +got): %s", diff)
+	if err := quick.Check(f, nil); err != nil {
+		t.Error(err)
 	}
 }

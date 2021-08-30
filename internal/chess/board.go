@@ -2,6 +2,8 @@ package chess
 
 import (
 	"fmt"
+	"math/rand"
+	"reflect"
 	"strings"
 )
 
@@ -20,33 +22,34 @@ type Board struct {
 }
 
 // NewBoard returns a new board with the given board-FEN representation.
-func NewBoard(boardFEN string) (*Board, error) {
+func NewBoard(boardFEN string) (Board, error) {
 	b := new(Board)
 	err := b.setFromBoardFEN(boardFEN)
-	return b, err
+	return *b, err
 }
 
 func (b *Board) setFromBoardFEN(boardFEN string) error {
 	square := A8
 	for _, r := range boardFEN {
-		piece, err := ParsePieceFEN(string(r))
-		if err == nil {
-			b.put(piece, square)
-		}
 		switch r {
 		case '1', '2', '3', '4', '5', '6', '7', '8':
 			square += Square(r - '0')
 		case '/':
 			square -= 16
 		default:
-			return fmt.Errorf("invalid board: %s", boardFEN)
+			piece, err := ParsePieceFEN(string(r))
+			if err != nil {
+				return fmt.Errorf("invalid board: %s", boardFEN)
+			}
+			b.put(piece, square)
 		}
+		square++
 	}
 	return nil
 }
 
-// Flip flips the board vertically.
-func (b *Board) Flip() {
+// Flip flips the board vertically and also returns the board.
+func (b *Board) Flip() *Board {
 	b.isFlipped = !b.isFlipped
 	b.friends.Flip()
 	b.enemies.Flip()
@@ -57,6 +60,7 @@ func (b *Board) Flip() {
 	b.queens.Flip()
 	b.kings.Flip()
 	b.friends, b.enemies = b.enemies, b.friends
+	return b
 }
 
 // FEN returns the FEN representation of the board.
@@ -142,4 +146,14 @@ func (b *Board) get(s Square) (Piece, bool) {
 		return 0, false
 	}
 	return NewPiece(c, r), true
+}
+
+// Generate lets Board satisfy testing/quick.Generator.
+func (Board) Generate(r *rand.Rand, size int) reflect.Value {
+	// TODO: improve this once move generation is implemented.
+	b, err := NewBoard(StartingBoardFEN)
+	if err != nil {
+		panic(err)
+	}
+	return reflect.ValueOf(b)
 }

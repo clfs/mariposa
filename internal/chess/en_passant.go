@@ -47,14 +47,6 @@ func (e EnPassantRight) FEN() string {
 	return target.FEN()
 }
 
-// Equal checks if two EnPassantRight represent equivalent en passant rights.
-// TODO: Benchmark and optimize this.
-func (e EnPassantRight) Equal(o EnPassantRight) bool {
-	eTarget, eAllowed := e.Get()
-	oTarget, oAllowed := o.Get()
-	return !(eAllowed || oAllowed) || (eTarget == oTarget)
-}
-
 // Generate lets EnPassantRight satisfy testing/quick.Generator.
 func (EnPassantRight) Generate(r *rand.Rand, size int) reflect.Value {
 	n := (enPassantAllowedMask | enPassantSquareMask) + 1
@@ -62,6 +54,9 @@ func (EnPassantRight) Generate(r *rand.Rand, size int) reflect.Value {
 }
 
 func ParseEnPassantRightFEN(s string) (EnPassantRight, error) {
+	if s == "-" {
+		return NewEnPassantRight(), nil
+	}
 	target, err := ParseSquareFEN(s)
 	if err != nil {
 		return 0, err
