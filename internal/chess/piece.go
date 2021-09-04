@@ -9,18 +9,18 @@ import (
 type Piece uint8
 
 const (
-	WhitePawn Piece = iota
-	WhiteKnight
-	WhiteBishop
-	WhiteRook
-	WhiteQueen
-	WhiteKing
-	BlackPawn = iota + 2
-	BlackKnight
-	BlackBishop
-	BlackRook
-	BlackQueen
-	BlackKing
+	WhitePawn   = Piece(uint8(White)<<3 | uint8(Pawn))
+	WhiteKnight = Piece(uint8(White)<<3 | uint8(Knight))
+	WhiteBishop = Piece(uint8(White)<<3 | uint8(Bishop))
+	WhiteRook   = Piece(uint8(White)<<3 | uint8(Rook))
+	WhiteQueen  = Piece(uint8(White)<<3 | uint8(Queen))
+	WhiteKing   = Piece(uint8(White)<<3 | uint8(King))
+	BlackPawn   = Piece(uint8(Black)<<3 | uint8(Pawn))
+	BlackKnight = Piece(uint8(Black)<<3 | uint8(Knight))
+	BlackBishop = Piece(uint8(Black)<<3 | uint8(Bishop))
+	BlackRook   = Piece(uint8(Black)<<3 | uint8(Rook))
+	BlackQueen  = Piece(uint8(Black)<<3 | uint8(Queen))
+	BlackKing   = Piece(uint8(Black)<<3 | uint8(King))
 )
 
 func NewPiece(c Color, r Role) Piece {
