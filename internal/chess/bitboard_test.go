@@ -10,7 +10,8 @@ import (
 func TestBitboard_Set(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square, x bool) bool {
-		return b.Set(s, x).Get(s) == x
+		b.Set(s, x)
+		return b.Get(s) == x
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -21,7 +22,8 @@ func TestBitboard_Toggle(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
 		old := b.Get(s)
-		return old != b.Toggle(s).Get(s)
+		b.Toggle(s)
+		return old != b.Get(s)
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
@@ -31,10 +33,9 @@ func TestBitboard_Toggle(t *testing.T) {
 func TestBitboard_Flip(t *testing.T) {
 	t.Parallel()
 	f := func(b Bitboard, s Square) bool {
-		x := b.Get(s)
-		y := b.Flip().Get(s.Flipped())
-		z := b.Flip().Get(s)
-		return x == y && y == z
+		old := b.Get(s)
+		b.Flip()
+		return old == b.Get(s.Flipped())
 	}
 	if err := quick.Check(f, nil); err != nil {
 		t.Error(err)
