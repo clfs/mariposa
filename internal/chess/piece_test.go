@@ -12,8 +12,8 @@ func TestPiece_Value(t *testing.T) {
 		p    Piece
 		want uint8
 	}{
-		{WhitePawn, 1},
-		{BlackPawn, 9},
+		{WhitePawn, 0},
+		{BlackPawn, 8},
 		{Piece(30), 30},
 	}
 	for _, c := range cases {

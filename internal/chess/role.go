@@ -3,7 +3,7 @@ package chess
 type Role uint8
 
 const (
-	Pawn Role = iota + 1
+	Pawn Role = iota
 	Knight
 	Bishop
 	Rook

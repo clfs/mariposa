@@ -9,15 +9,13 @@ import (
 type Piece uint8
 
 const (
-	WhitePawn Piece = iota + 1
+	WhitePawn Piece = iota
 	WhiteKnight
 	WhiteBishop
 	WhiteRook
 	WhiteQueen
 	WhiteKing
-	_
-	_
-	BlackPawn
+	BlackPawn = iota + 2
 	BlackKnight
 	BlackBishop
 	BlackRook
