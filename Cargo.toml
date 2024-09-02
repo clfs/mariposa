@@ -1,6 +1,12 @@
 [package]
 name = "mariposa"
 version = "0.1.0"
+authors = ["Calvin Figuereo-Supraner <mail@calvin.page>"]
 edition = "2021"
+description = "A chess engine."
+readme = "README.md"
+repository = "https://github.com/clfs/mariposa"
+license = "MIT"
+keywords = ["chess"]
 
 [dependencies]
