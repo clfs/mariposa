@@ -1,3 +1,8 @@
+mod core;
+
 fn main() {
-    println!("Hello, world!");
+    let c = core::Color::White;
+
+    println!("Current color: {:?}", c);
+    println!("Other color: {:?}", c.other());
 }
