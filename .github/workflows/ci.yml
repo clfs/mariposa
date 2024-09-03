@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Format check
+        run: cargo fmt --check
       - name: Build
         run: cargo build --verbose
       - name: Run tests
