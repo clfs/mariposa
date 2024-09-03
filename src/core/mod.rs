@@ -4,7 +4,7 @@
 /// A color on the chess board.
 pub enum Color {
     White,
-    Black
+    Black,
 }
 
 impl Color {
